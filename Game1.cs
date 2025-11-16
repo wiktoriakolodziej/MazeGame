@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Java.Util;
 using MazeGame.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,10 +16,12 @@ namespace MazeGame
         private SpriteBatch _spriteBatch;
         private static Accelerometer _accelSensor;
         private Sprite _ball;
+        private Sprite _obstacle;
+        private List<Rectangle> _obstacles = new List<Rectangle>();
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);    
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             _graphics.IsFullScreen = true;
@@ -40,8 +44,11 @@ namespace MazeGame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _ball = new Sprite(Content.Load<Texture2D>("Images/ball"),
+                new Vector2(0,0));
+            _obstacle = new Sprite(Content.Load<Texture2D>("Images/obstacle"),
                 new Vector2(GraphicsDevice.Viewport.Width / 2f, GraphicsDevice.Viewport.Height / 2f));
-            //_ball.CenterOrigin();
+            _obstacle.TexColor = Color.Red;
+            _obstacles.Add(new Rectangle((int)_obstacle.Position.X, (int) _obstacle.Position.Y, (int)_obstacle.Width, (int)_obstacle.Height));
             // TODO: use this.Content to load your game content here
         }
 
@@ -56,7 +63,7 @@ namespace MazeGame
         private void ChangeVelocity(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
             Console.WriteLine($"X: {e.SensorReading.Acceleration.X}, Y: {e.SensorReading.Acceleration.Y}, Z: {e.SensorReading.Acceleration.Z}");
-            _ball.Velocity += 0.1f * new Vector2(e.SensorReading.Acceleration.X, e.SensorReading.Acceleration.Y);
+            _ball.Velocity += 0.1f * new Vector2(-e.SensorReading.Acceleration.X, e.SensorReading.Acceleration.Y);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -67,6 +74,7 @@ namespace MazeGame
             _spriteBatch.Begin();
 
             _ball.Draw(_spriteBatch);
+            _obstacle.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
@@ -86,8 +94,6 @@ namespace MazeGame
                 (int)_ball.Width,
                 (int)_ball.Height
             );
-
-            // Get the bounds of the screen as a rectangle.
             Rectangle screenBounds = new Rectangle(
                 0,
                 0,
@@ -142,8 +148,59 @@ namespace MazeGame
                 _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
             }
 
+
+            foreach (var element in _obstacles)
+            {
+                if (element.Intersects(ballBounds))
+                {
+                    // Ball would move outside the screen
+                    // First find the distance from the edge of the ball to each edge of the screen.
+                    float distanceLeft = Math.Abs(element.Left - ballBounds.Left);
+                    float distanceRight = Math.Abs(element.Right - ballBounds.Right);
+                    float distanceTop = Math.Abs(element.Top - ballBounds.Top);
+                    float distanceBottom = Math.Abs(element.Bottom - ballBounds.Bottom);
+
+                    // Determine which screen edge is the closest.
+                    float minDistance = Math.Min(
+                        Math.Min(distanceLeft, distanceRight),
+                        Math.Min(distanceTop, distanceBottom)
+                    );
+
+                    // Determine the normal vector based on which screen edge is the closest.
+                    Vector2 normal;
+                    if (minDistance == distanceLeft)
+                    {
+                        // Closest to the left edge.
+                        normal = - Vector2.UnitX;
+                        newPosition.X = element.Left - _ball.Width;
+                    }
+                    else if (minDistance == distanceRight)
+                    {
+                        // Closest to the right edge.
+                        normal = Vector2.UnitX;
+                        newPosition.X = element.Right;
+                    }
+                    else if (minDistance == distanceTop)
+                    {
+                        // Closest to the top edge.
+                        normal = - Vector2.UnitY;
+                        newPosition.Y = element.Top - _ball.Height;
+                    }
+                    else
+                    {
+                        // Closest to the bottom edge.
+                        normal = Vector2.UnitY;
+                        newPosition.Y = element.Bottom;
+                    }
+
+                    // Reflect the velocity about the normal.
+                    _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
+                }
+            }
+
             // Set the new position of the ball.
             _ball.Position = newPosition;
+            // Apply friction to the ball's velocity.
             _ball.Velocity *= 0.99f;
 
         }
