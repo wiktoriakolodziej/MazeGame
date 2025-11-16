@@ -155,10 +155,10 @@ namespace MazeGame
                 {
                     // Ball would move outside the screen
                     // First find the distance from the edge of the ball to each edge of the screen.
-                    float distanceLeft = Math.Abs(element.Left - ballBounds.Left);
-                    float distanceRight = Math.Abs(element.Right - ballBounds.Right);
-                    float distanceTop = Math.Abs(element.Top - ballBounds.Top);
-                    float distanceBottom = Math.Abs(element.Bottom - ballBounds.Bottom);
+                    float distanceLeft = Math.Abs(element.Left - ballBounds.Right);
+                    float distanceRight = Math.Abs(element.Right - ballBounds.Left);
+                    float distanceTop = Math.Abs(element.Top - ballBounds.Bottom);
+                    float distanceBottom = Math.Abs(element.Bottom - ballBounds.Top);
 
                     // Determine which screen edge is the closest.
                     float minDistance = Math.Min(
