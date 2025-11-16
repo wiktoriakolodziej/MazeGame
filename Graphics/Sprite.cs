@@ -85,10 +85,9 @@ namespace MazeGame.Graphics
             Origin = new Vector2(Texture.Width, Texture.Height) * 0.5f;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, position, null, TexColor, Rotation, Origin, Scale, Effects, LayerDepth);
-            Position = position;
+            spriteBatch.Draw(Texture, Position, null, TexColor, Rotation, Origin, Scale, Effects, LayerDepth);
         }
 
     }
