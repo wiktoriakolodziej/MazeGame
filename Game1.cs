@@ -14,21 +14,16 @@ namespace MazeGame
         private SpriteBatch _spriteBatch;
         private static Accelerometer _accelSensor;
         private Sprite _ball;
-        private Rectangle spriteBounds;
-        private Vector3 _accVec;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            
-            //spriteBounds = new Rectangle(
-            //    (int)_ball.X,
-            //    (int)_ball.Y,
-            //    (int)_ball.Width,
-            //    (int)_ball.Height
-            //);
+            _graphics.IsFullScreen = true;
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            _graphics.ApplyChanges();
         }
 
         protected override void Initialize()
@@ -44,9 +39,9 @@ namespace MazeGame
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _ball = new Sprite(Content.Load<Texture2D>("Images/ball"), 
+            _ball = new Sprite(Content.Load<Texture2D>("Images/ball"),
                 new Vector2(GraphicsDevice.Viewport.Width / 2f, GraphicsDevice.Viewport.Height / 2f));
-            _ball.CenterOrigin();
+            //_ball.CenterOrigin();
             // TODO: use this.Content to load your game content here
         }
 
@@ -149,6 +144,7 @@ namespace MazeGame
 
             // Set the new position of the ball.
             _ball.Position = newPosition;
+            _ball.Velocity *= 0.99f;
 
         }
     }
