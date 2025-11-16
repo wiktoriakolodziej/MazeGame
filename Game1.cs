@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Framework.Devices.Sensors;
 
 namespace MazeGame
 {
@@ -8,6 +10,7 @@ namespace MazeGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private static Accelerometer _accelSensor;
 
         public Game1()
         {
@@ -21,6 +24,9 @@ namespace MazeGame
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            _accelSensor ??= new Accelerometer();
+            _accelSensor.CurrentValueChanged += DisplayAccValue;
+            _accelSensor.Start();
         }
 
         protected override void LoadContent()
@@ -35,9 +41,12 @@ namespace MazeGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
+        }
+
+        private static void DisplayAccValue(object sender, SensorReadingEventArgs<AccelerometerReading> e)
+        {
+            Console.WriteLine($"X: {e.SensorReading.Acceleration.X}, Y: {e.SensorReading.Acceleration.Y}, Z: {e.SensorReading.Acceleration.Z}");
         }
 
         protected override void Draw(GameTime gameTime)
