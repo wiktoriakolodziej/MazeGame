@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using Java.Util;
-using MazeGame.Graphics;
+﻿using MazeGame.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.Devices.Sensors;
+using System;
+using System.Collections.Generic;
 
 namespace MazeGame
 {
 
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private static Accelerometer _accelSensor;
         private Sprite _ball;
         private Sprite _obstacle;
-        private List<Rectangle> _obstacles = new List<Rectangle>();
+        private readonly List<Rectangle> _obstacles = [];
 
         public Game1()
         {
@@ -32,8 +31,6 @@ namespace MazeGame
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
             _accelSensor ??= new Accelerometer();
             _accelSensor.CurrentValueChanged += ChangeVelocity;
@@ -45,7 +42,7 @@ namespace MazeGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _ball = new Sprite(Content.Load<Texture2D>("Images/ball"),
                 new Vector2(0,0));
-            _obstacle = new Sprite(Content.Load<Texture2D>("Images/obstacle"),
+            _obstacle = new(Content.Load<Texture2D>("Images/obstacle"),
                 new Vector2(GraphicsDevice.Viewport.Width / 2f, GraphicsDevice.Viewport.Height / 2f));
             _obstacle.TexColor = Color.Red;
             _obstacles.Add(new Rectangle((int)_obstacle.Position.X, (int) _obstacle.Position.Y, (int)_obstacle.Width, (int)_obstacle.Height));
