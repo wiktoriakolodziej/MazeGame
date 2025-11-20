@@ -54,6 +54,8 @@ namespace MazeGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            SetVelocity();
+
             base.Update(gameTime);
         }
 
@@ -66,7 +68,6 @@ namespace MazeGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            SetVelocity();
 
             _spriteBatch.Begin();
 
