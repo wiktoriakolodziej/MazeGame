@@ -98,6 +98,8 @@ namespace MazeGame
                 GraphicsDevice.PresentationParameters.BackBufferWidth,
                 GraphicsDevice.PresentationParameters.BackBufferHeight
             );
+            int ballRadius = (int)(_ball.Width / 2);
+            Vector2 ballCenter = new Vector2((int)_ball.Position.X + ballRadius, (int)_ball.Position.Y + ballRadius);
 
             // Detect if the ball object is within the screen bounds.
             if (!screenBounds.Contains(ballBounds))
@@ -153,46 +155,62 @@ namespace MazeGame
                 {
                     // Ball would move outside the screen
                     // First find the distance from the edge of the ball to each edge of the screen.
-                    float distanceLeft = Math.Abs(element.Left - ballBounds.Right);
-                    float distanceRight = Math.Abs(element.Right - ballBounds.Left);
-                    float distanceTop = Math.Abs(element.Top - ballBounds.Bottom);
-                    float distanceBottom = Math.Abs(element.Bottom - ballBounds.Top);
+                    float distanceLeft = Math.Abs(element.Left - ballCenter.X);
+                    float distanceRight = Math.Abs(element.Right - ballCenter.X);
+                    float distanceTop = Math.Abs(element.Top - ballCenter.Y);
+                    float distanceBottom = Math.Abs(element.Bottom - ballCenter.Y);
 
                     // Determine which screen edge is the closest.
-                    float minDistance = Math.Min(
-                        Math.Min(distanceLeft, distanceRight),
-                        Math.Min(distanceTop, distanceBottom)
-                    );
+                    float minDistanceX = Math.Min(distanceLeft, distanceRight);
+                    float minDistanceY = Math.Min(distanceTop, distanceBottom);
+                    double distance = Math.Sqrt((minDistanceX * minDistanceX) + (minDistanceY * minDistanceY));
+                    //float minDistance = Math.Min(
+                    //    Math.Min(distanceLeft, distanceRight),
+                    //    Math.Min(distanceTop, distanceBottom)
+                    //);
+
+                    
 
                     // Determine the normal vector based on which screen edge is the closest.
-                    Vector2 normal;
-                    if (minDistance == distanceLeft)
+                    if (distance <= ballRadius)
                     {
-                        // Closest to the left edge.
-                        normal = - Vector2.UnitX;
-                        newPosition.X = element.Left - _ball.Width;
+                        Vector2 normal = new Vector2(ballCenter.X - element.Center.X, ballCenter.Y - element.Center.Y);
+                        normal.Normalize();
+                        if (distance < ballRadius)
+                        {
+                            // TODO chyba dobry kierunek przesunięcia, ale za bardzo się przesuwa
+                            newPosition.X = (float)(ballBounds.X + distance*normal.X);
+                            newPosition.Y = (float)(ballBounds.Y + distance*normal.Y);
+                        }
+                        // Reflect the velocity about the normal.
+                        _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
+                        //if (minDistanceX == distanceLeft)
+                        //{
+                        //    // Closest to the left edge.
+                        //    //normal = -Vector2.UnitX;
+                        //    newPosition.X = element.Left - _ball.Width;
+                        //}
+                        //else
+                        //{
+                        //    // Closest to the right edge.
+                        //    //normal = Vector2.UnitX;
+                        //    newPosition.X = element.Right;
+                        //}
+                        //if (minDistanceY == distanceTop)
+                        //{
+                        //    // Closest to the top edge.
+                        //    //normal = -Vector2.UnitY;
+                        //    newPosition.Y = element.Top - _ball.Height;
+                        //}
+                        //else
+                        //{
+                        //    // Closest to the bottom edge.
+                        //    //normal = Vector2.UnitY;
+                        //    newPosition.Y = element.Bottom;
+                        //}
                     }
-                    else if (minDistance == distanceRight)
-                    {
-                        // Closest to the right edge.
-                        normal = Vector2.UnitX;
-                        newPosition.X = element.Right;
-                    }
-                    else if (minDistance == distanceTop)
-                    {
-                        // Closest to the top edge.
-                        normal = - Vector2.UnitY;
-                        newPosition.Y = element.Top - _ball.Height;
-                    }
-                    else
-                    {
-                        // Closest to the bottom edge.
-                        normal = Vector2.UnitY;
-                        newPosition.Y = element.Bottom;
-                    }
+                    
 
-                    // Reflect the velocity about the normal.
-                    _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
                 }
             }
 
