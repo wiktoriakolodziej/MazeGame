@@ -61,7 +61,7 @@ namespace MazeGame
 
         private void ChangeVelocity(object sender, SensorReadingEventArgs<AccelerometerReading> e)
         {
-            Console.WriteLine($"X: {e.SensorReading.Acceleration.X}, Y: {e.SensorReading.Acceleration.Y}, Z: {e.SensorReading.Acceleration.Z}");
+            //Console.WriteLine($"X: {e.SensorReading.Acceleration.X}, Y: {e.SensorReading.Acceleration.Y}, Z: {e.SensorReading.Acceleration.Z}");
             _ball.Velocity += 0.1f * new Vector2(-e.SensorReading.Acceleration.X, e.SensorReading.Acceleration.Y);
         }
 
@@ -153,62 +153,80 @@ namespace MazeGame
             {
                 if (element.Intersects(ballBounds))
                 {
-                    // Ball would move outside the screen
-                    // First find the distance from the edge of the ball to each edge of the screen.
-                    float distanceLeft = Math.Abs(element.Left - ballCenter.X);
-                    float distanceRight = Math.Abs(element.Right - ballCenter.X);
-                    float distanceTop = Math.Abs(element.Top - ballCenter.Y);
-                    float distanceBottom = Math.Abs(element.Bottom - ballCenter.Y);
-
-                    // Determine which screen edge is the closest.
-                    float minDistanceX = Math.Min(distanceLeft, distanceRight);
-                    float minDistanceY = Math.Min(distanceTop, distanceBottom);
-                    double distance = Math.Sqrt((minDistanceX * minDistanceX) + (minDistanceY * minDistanceY));
-                    //float minDistance = Math.Min(
-                    //    Math.Min(distanceLeft, distanceRight),
-                    //    Math.Min(distanceTop, distanceBottom)
-                    //);
-
-                    
-
-                    // Determine the normal vector based on which screen edge is the closest.
-                    if (distance <= ballRadius)
+                    // TODO osobne sytuacje dla rogów i krawędzi? w inny sposób trzeba je wyciągnąć
+                    if (Math.Sqrt(Math.Pow(element.Left - ballCenter.X, 2) + Math.Pow(element.Top - ballCenter.Y, 2)) <= ballRadius ||
+                        Math.Sqrt(Math.Pow(element.Right - ballCenter.X, 2) + Math.Pow(element.Top - ballCenter.Y, 2)) <= ballRadius ||
+                        Math.Sqrt(Math.Pow(element.Left - ballCenter.X, 2) + Math.Pow(element.Bottom - ballCenter.Y, 2)) <= ballRadius ||
+                        Math.Sqrt(Math.Pow(element.Right - ballCenter.X, 2) + Math.Pow(element.Bottom - ballCenter.Y, 2)) <= ballRadius)
                     {
-                        Vector2 normal = new Vector2(ballCenter.X - element.Center.X, ballCenter.Y - element.Center.Y);
-                        normal.Normalize();
-                        if (distance < ballRadius)
+                        Console.WriteLine("corner");
+                        float distanceLeft = Math.Abs(element.Left - ballCenter.X);
+                        float distanceRight = Math.Abs(element.Right - ballCenter.X);
+                        float distanceTop = Math.Abs(element.Top - ballCenter.Y);
+                        float distanceBottom = Math.Abs(element.Bottom - ballCenter.Y);
+
+                        // Determine which screen edge is the closest.
+                        float minDistanceX = Math.Min(distanceLeft, distanceRight);
+                        float minDistanceY = Math.Min(distanceTop, distanceBottom);
+                        double distance = Math.Sqrt((minDistanceX * minDistanceX) + (minDistanceY * minDistanceY));
+                        if (distance <= ballRadius)
                         {
-                            // TODO chyba dobry kierunek przesunięcia, ale za bardzo się przesuwa
-                            newPosition.X = (float)(ballBounds.X + distance*normal.X);
-                            newPosition.Y = (float)(ballBounds.Y + distance*normal.Y);
+                            Vector2 normal = new Vector2(ballCenter.X - element.Center.X, ballCenter.Y - element.Center.Y);
+                            normal.Normalize();
+                            if (distance < ballRadius)
+                            {
+                                // TODO dobrze działa tylko dla rogów
+                                newPosition.X = (float)(ballBounds.X + (ballRadius - distance) * normal.X);
+                                newPosition.Y = (float)(ballBounds.Y + (ballRadius - distance) * normal.Y);
+                            }
+                            // Reflect the velocity about the normal.
+                            _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
                         }
-                        // Reflect the velocity about the normal.
-                        _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
-                        //if (minDistanceX == distanceLeft)
-                        //{
-                        //    // Closest to the left edge.
-                        //    //normal = -Vector2.UnitX;
-                        //    newPosition.X = element.Left - _ball.Width;
-                        //}
-                        //else
-                        //{
-                        //    // Closest to the right edge.
-                        //    //normal = Vector2.UnitX;
-                        //    newPosition.X = element.Right;
-                        //}
-                        //if (minDistanceY == distanceTop)
-                        //{
-                        //    // Closest to the top edge.
-                        //    //normal = -Vector2.UnitY;
-                        //    newPosition.Y = element.Top - _ball.Height;
-                        //}
-                        //else
-                        //{
-                        //    // Closest to the bottom edge.
-                        //    //normal = Vector2.UnitY;
-                        //    newPosition.Y = element.Bottom;
-                        //}
                     }
+                    else
+                    {
+                        Console.WriteLine("edge");
+                        // Ball would move outside the screen
+                        // First find the distance from the edge of the ball to each edge of the screen.
+                        float distanceLeft = Math.Abs(element.Left - ballBounds.Right);
+                        float distanceRight = Math.Abs(element.Right - ballBounds.Left);
+                        float distanceTop = Math.Abs(element.Top - ballBounds.Bottom);
+                        float distanceBottom = Math.Abs(element.Bottom - ballBounds.Top);
+
+                        // Determine which screen edge is the closest.
+                        float minDistance = Math.Min(
+                            Math.Min(distanceLeft, distanceRight),
+                            Math.Min(distanceTop, distanceBottom)
+                        );
+
+                        // Determine the normal vector based on which screen edge is the closest.
+                        Vector2 normal;
+                        if (minDistance == distanceLeft)
+                        {
+                            // Closest to the left edge.
+                            normal = -Vector2.UnitX;
+                            newPosition.X = element.Left - _ball.Width;
+                        }
+                        else if (minDistance == distanceRight)
+                        {
+                            // Closest to the right edge.
+                            normal = Vector2.UnitX;
+                            newPosition.X = element.Right;
+                        }
+                        else if (minDistance == distanceTop)
+                        {
+                            // Closest to the top edge.
+                            normal = -Vector2.UnitY;
+                            newPosition.Y = element.Top - _ball.Height;
+                        }
+                        else
+                        {
+                            // Closest to the bottom edge.
+                            normal = Vector2.UnitY;
+                            newPosition.Y = element.Bottom;
+                        }
+                    }
+                        
                     
 
                 }
