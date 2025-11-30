@@ -84,6 +84,7 @@ namespace MazeGame
         {
             // Calculate the new position of the ball based on the velocity.
             Vector2 newPosition = _ball.Position + _ball.Velocity;
+            Console.WriteLine("velocity " + _ball.Velocity);
 
             // Get the bounds of the ball as a rectangle.
             Rectangle ballBounds = new Rectangle(
@@ -153,118 +154,6 @@ namespace MazeGame
             {
                 if (element.Intersects(ballBounds))
                 {
-                    //float distanceLeft = Math.Abs(element.Left - ballBounds.Right);
-                    //float distanceRight = Math.Abs(element.Right - ballBounds.Left);
-                    //float distanceTop = Math.Abs(element.Top - ballBounds.Bottom);
-                    //float distanceBottom = Math.Abs(element.Bottom - ballBounds.Top);
-
-                    //// Determine which screen edge is the closest.
-                    //float minDistance = Math.Min(
-                    //    Math.Min(distanceLeft, distanceRight),
-                    //    Math.Min(distanceTop, distanceBottom)
-                    //);
-
-                    //// Determine the normal vector based on which screen edge is the closest.
-                    //Vector2 normal;
-                    //if (minDistance == distanceLeft)
-                    //{
-                    //    // Closest to the left edge.
-                    //    normal = -Vector2.UnitX;
-                    //    newPosition.X = element.Left - _ball.Width;
-                    //}
-                    //else if (minDistance == distanceRight)
-                    //{
-                    //    // Closest to the right edge.
-                    //    normal = Vector2.UnitX;
-                    //    newPosition.X = element.Right;
-                    //}
-                    //else if (minDistance == distanceTop)
-                    //{
-                    //    // Closest to the top edge.
-                    //    normal = -Vector2.UnitY;
-                    //    newPosition.Y = element.Top - _ball.Height;
-                    //}
-                    //else
-                    //{
-                    //    // Closest to the bottom edge.
-                    //    normal = Vector2.UnitY;
-                    //    newPosition.Y = element.Bottom;
-                    //}
-                    //_ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
-                    // TODO osobne sytuacje dla rogów i krawędzi? w inny sposób trzeba je wyciągnąć
-                    //if (Math.Sqrt(Math.Pow(element.Left - ballCenter.X, 2) + Math.Pow(element.Top - ballCenter.Y, 2)) <= ballRadius ||
-                    //    Math.Sqrt(Math.Pow(element.Right - ballCenter.X, 2) + Math.Pow(element.Top - ballCenter.Y, 2)) <= ballRadius ||
-                    //    Math.Sqrt(Math.Pow(element.Left - ballCenter.X, 2) + Math.Pow(element.Bottom - ballCenter.Y, 2)) <= ballRadius ||
-                    //    Math.Sqrt(Math.Pow(element.Right - ballCenter.X, 2) + Math.Pow(element.Bottom - ballCenter.Y, 2)) <= ballRadius)
-                    //{
-                    //    Console.WriteLine("corner");
-                    //    float distanceLeft = Math.Abs(element.Left - ballCenter.X);
-                    //    float distanceRight = Math.Abs(element.Right - ballCenter.X);
-                    //    float distanceTop = Math.Abs(element.Top - ballCenter.Y);
-                    //    float distanceBottom = Math.Abs(element.Bottom - ballCenter.Y);
-
-                    //    // Determine which screen edge is the closest.
-                    //    float minDistanceX = Math.Min(distanceLeft, distanceRight);
-                    //    float minDistanceY = Math.Min(distanceTop, distanceBottom);
-                    //    double distance = Math.Sqrt((minDistanceX * minDistanceX) + (minDistanceY * minDistanceY));
-                    //    if (distance <= ballRadius)
-                    //    {
-                    //        Vector2 normal = new Vector2(ballCenter.X - element.Center.X, ballCenter.Y - element.Center.Y);
-                    //        normal.Normalize();
-                    //        if (distance < ballRadius)
-                    //        {
-                    //            // TODO dobrze działa tylko dla rogów
-                    //            newPosition.X = (float)(ballBounds.X + (ballRadius - distance) * normal.X);
-                    //            newPosition.Y = (float)(ballBounds.Y + (ballRadius - distance) * normal.Y);
-                    //        }
-                    //        // Reflect the velocity about the normal.
-                    //        _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    Console.WriteLine("edge");
-                    //    // Ball would move outside the screen
-                    //    // First find the distance from the edge of the ball to each edge of the screen.
-                    //    float distanceLeft = Math.Abs(element.Left - ballBounds.Right);
-                    //    float distanceRight = Math.Abs(element.Right - ballBounds.Left);
-                    //    float distanceTop = Math.Abs(element.Top - ballBounds.Bottom);
-                    //    float distanceBottom = Math.Abs(element.Bottom - ballBounds.Top);
-
-                    //    // Determine which screen edge is the closest.
-                    //    float minDistance = Math.Min(
-                    //        Math.Min(distanceLeft, distanceRight),
-                    //        Math.Min(distanceTop, distanceBottom)
-                    //    );
-
-                    //    // Determine the normal vector based on which screen edge is the closest.
-                    //    Vector2 normal;
-                    //    if (minDistance == distanceLeft)
-                    //    {
-                    //        // Closest to the left edge.
-                    //        normal = -Vector2.UnitX;
-                    //        newPosition.X = element.Left - _ball.Width;
-                    //    }
-                    //    else if (minDistance == distanceRight)
-                    //    {
-                    //        // Closest to the right edge.
-                    //        normal = Vector2.UnitX;
-                    //        newPosition.X = element.Right;
-                    //    }
-                    //    else if (minDistance == distanceTop)
-                    //    {
-                    //        // Closest to the top edge.
-                    //        normal = -Vector2.UnitY;
-                    //        newPosition.Y = element.Top - _ball.Height;
-                    //    }
-                    //    else
-                    //    {
-                    //        // Closest to the bottom edge.
-                    //        normal = Vector2.UnitY;
-                    //        newPosition.Y = element.Bottom;
-                    //    }
-                    //    _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
-                    //}
                     float nx = Math.Max(element.Left, Math.Min(element.Right, ballCenter.X));
                     float ny = Math.Max(element.Top, Math.Min(element.Bottom, ballCenter.Y));
                     Vector2 ray_n = new Vector2(nx - ballCenter.X, ny - ballCenter.Y);
@@ -272,33 +161,11 @@ namespace MazeGame
                     float overlap = ballRadius - n_magnitude;
                     if (overlap > 0)
                     {
-                        Vector2 n_normal = Vector2.Normalize(ray_n);
-                        newPosition -= n_normal*overlap;
+                        Vector2 n_normal = (-1) * Vector2.Normalize(ray_n);
+                        Console.WriteLine("normal " + n_normal + " v " + _ball.Velocity + " v reflected " + Vector2.Reflect(_ball.Velocity, n_normal) + " overlap " + overlap);
+                        _ball.Velocity = Vector2.Reflect(_ball.Velocity, n_normal);
+                        newPosition += n_normal * overlap + _ball.Velocity;
                     }
-                    //float distanceLeft = Math.Abs(element.Left - ballCenter.X);
-                    //float distanceRight = Math.Abs(element.Right - ballCenter.X);
-                    //float distanceTop = Math.Abs(element.Top - ballCenter.Y);
-                    //float distanceBottom = Math.Abs(element.Bottom - ballCenter.Y);
-
-                    //// Determine which screen edge is the closest.
-                    //float minDistanceX = Math.Min(distanceLeft, distanceRight);
-                    //float minDistanceY = Math.Min(distanceTop, distanceBottom);
-                    //double distance = Math.Sqrt((minDistanceX * minDistanceX) + (minDistanceY * minDistanceY));
-                    //if (distance <= ballRadius)
-                    //{
-                    //    Vector2 normal = new Vector2(ballCenter.X - element.Center.X, ballCenter.Y - element.Center.Y);
-                    //    normal.Normalize();
-                    //    if (distance < ballRadius)
-                    //    {
-                    //        // TODO dobrze działa tylko dla rogów
-                    //        newPosition.X = (float)(ballBounds.X + (ballRadius - distance) * normal.X);
-                    //        newPosition.Y = (float)(ballBounds.Y + (ballRadius - distance) * normal.Y);
-                    //    }
-                    //    // Reflect the velocity about the normal.
-                    //    _ball.Velocity = Vector2.Reflect(_ball.Velocity, normal);
-                    //}
-
-
 
                 }
             }
