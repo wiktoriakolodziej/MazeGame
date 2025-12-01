@@ -19,10 +19,7 @@ namespace MazeGame.Services
             );
 
             if (obstacleBounds.Contains(ballBounds))
-            {
-                movingObject.Position += movingObject.Velocity;
                 return;
-            }
 
             var newPosition = movingObject.Position + movingObject.Velocity;
             
@@ -127,7 +124,7 @@ namespace MazeGame.Services
 
         public void MoveCircleWithCCD(Sprite movingObject, List<Rectangle> obstacles)
         {
-            float radius = (int)(movingObject.Width / 2);
+            float radius = movingObject.Width / 2;
             float remaining = 1.0f; // normalized frame time (1 == full dt)
             int maxIterations = 4;   // tweak: more iterations = more accurate but costlier
 
