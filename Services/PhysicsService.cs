@@ -12,8 +12,8 @@ namespace MazeGame.Services
         public void InsideBounce(Sprite movingObject, Rectangle obstacleBounds)
         {
             var ballBounds = new Rectangle(
-                (int)movingObject.Position.X,
-                (int)movingObject.Position.Y,
+                (int)(movingObject.Position.X - movingObject.Width/2),
+                (int)(movingObject.Position.Y - movingObject.Height/2),
                 (int)movingObject.Width,
                 (int)movingObject.Height
             );
@@ -42,25 +42,25 @@ namespace MazeGame.Services
             {
                 // Closest to the left edge.
                 normal = Vector2.UnitX;
-                newPosition.X = 0;
+                newPosition.X = movingObject.Width/2;
             }
             else if (minDistance == distanceRight)
             {
                 // Closest to the right edge.
                 normal = -Vector2.UnitX;
-                newPosition.X = obstacleBounds.Right - movingObject.Width;
+                newPosition.X = obstacleBounds.Right - movingObject.Width/2;
             }
             else if (minDistance == distanceTop)
             {
                 // Closest to the top edge.
                 normal = Vector2.UnitY;
-                newPosition.Y = 0;
+                newPosition.Y = movingObject.Height/2;
             }
             else
             {
                 // Closest to the bottom edge.
                 normal = -Vector2.UnitY;
-                newPosition.Y = obstacleBounds.Bottom - movingObject.Height;
+                newPosition.Y = obstacleBounds.Bottom - movingObject.Height/2;
             }
 
             // Reflect the velocity about the normal.
