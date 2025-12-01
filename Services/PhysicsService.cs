@@ -1,6 +1,9 @@
 ﻿using MazeGame.Graphics;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Android.Graphics;
 
 namespace MazeGame.Services
 {
@@ -70,6 +73,20 @@ namespace MazeGame.Services
             movingObject.Position = newPosition;
 
         }
+
+        public void OutsideBounce(Sprite movingObject, List<Rectangle> obstaclesBounds)
+        {
+            var ballBounds = new Rectangle(
+                (int)movingObject.Position.X,
+                (int)movingObject.Position.Y,
+                (int)movingObject.Width,
+                (int)movingObject.Height
+            );
+
+            foreach (var rect in obstaclesBounds.Where(r => r.Intersects(ballBounds)))
+                OutsideBounce(movingObject, rect);
+        }
+
         public void OutsideBounce(Sprite movingObject, Rectangle obstacleBounds)
         {
            
@@ -81,15 +98,15 @@ namespace MazeGame.Services
                 (int)movingObject.Height
             );
 
-            if (!obstacleBounds.Intersects(ballBounds))
-            {
-                movingObject.Position += movingObject.Velocity;
-                return;
-            }
-
             // Calculate the new position of the ball based on the velocity.
             var newPosition = movingObject.Position + movingObject.Velocity;
-            Console.WriteLine("velocity " + movingObject.Velocity);
+            //Console.WriteLine("velocity " + movingObject.Velocity);
+
+            if (!obstacleBounds.Intersects(ballBounds))
+            {
+                movingObject.Position = newPosition;
+                return;
+            }
 
             var ballRadius = (int)(movingObject.Width / 2);
             var ballCenter = new Vector2((int)movingObject.Position.X + ballRadius, (int)movingObject.Position.Y + ballRadius);
@@ -103,7 +120,7 @@ namespace MazeGame.Services
             if (overlap > 0)
             {
                 Vector2 n_normal = (-1) * Vector2.Normalize(ray_n);
-                Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap);
+                //Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap);
                 movingObject.Velocity = Vector2.Reflect(movingObject.Velocity, n_normal);
                 newPosition += n_normal * overlap + movingObject.Velocity;
             }
