@@ -57,7 +57,6 @@ namespace MazeGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _ball = new Sprite(Content.Load<Texture2D>("Images/ball"),
                 new Vector2(10, 10));
-            _ball.CenterOrigin();
             _accelerometerService.SetObject(_ball);
             
 

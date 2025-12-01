@@ -22,7 +22,7 @@ namespace MazeGame.Maze
         {
             var (mObjectXIndex, mObjectYIndex) = GetCellIndices(_movingObject.Position);
             var adjacentCells = GetAdjacentCells(mObjectXIndex, mObjectYIndex);
-            _physicsService.MoveCircleWithCCD(_movingObject, adjacentCells);
+            _physicsService.OutsideBounce(_movingObject, adjacentCells);
         }
 
         private (int, int) GetCellIndices(Vector2 position)
