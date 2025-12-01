@@ -44,7 +44,7 @@ namespace MazeGame.Maze
             {
                 for (var y = yIndex - radius; y <= yIndex + radius; y++)
                 {
-                    if (x >= 0 && x < _maze.Rows && y >= 0 && y < _maze.Columns && (x == xIndex || y == yIndex))
+                    if (x >= 0 && x < _maze.Rows && y >= 0 && y < _maze.Columns && (x == xIndex || y == yIndex) && _maze.Grid[x,y].Type == CellType.Wall)
                         adjacentCells.Add(new Rectangle(x * _cellWidth, y * _cellHeight, _cellWidth, _cellHeight));
                 }
             }
