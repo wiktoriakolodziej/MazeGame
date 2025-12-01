@@ -79,6 +79,8 @@ namespace MazeGame.Graphics
         public Vector2 Position = position ?? Vector2.Zero;
         public Vector2 Velocity = Vector2.Zero;
 
+        public Rectangle SourceRectangle { get; set; } = new Rectangle(0, 0, texture.Width, texture.Height);
+
         public void CenterOrigin()
         {
             Origin = new Vector2(Texture.Width, Texture.Height) * 0.5f;
@@ -86,7 +88,7 @@ namespace MazeGame.Graphics
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null, TexColor, Rotation, Origin, Scale, Effects, LayerDepth);
+            spriteBatch.Draw(Texture, Position, SourceRectangle, TexColor, Rotation, Origin, Scale, Effects, LayerDepth);
         }
 
     }

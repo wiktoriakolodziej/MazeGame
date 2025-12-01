@@ -46,6 +46,9 @@ namespace MazeGame
             );
             var maze = Maze.Maze.CreateFromFile("maze.txt", Content);
             _mazeControl = new MazeControl(maze, _ball, _spriteBatch, _screenBounds);
+            var ballStartPoint = _mazeControl.GetStartRectangle();
+            _ball.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
+            _ball.Scale = new Vector2(ballStartPoint.Width);
         }
 
         protected override void LoadContent()
@@ -65,6 +68,7 @@ namespace MazeGame
                 Exit();
 
             _physicsService.InsideBounce(_ball, _screenBounds);
+            //_mazeControl.ResolveCollisions();
 
             base.Update(gameTime);
         }
