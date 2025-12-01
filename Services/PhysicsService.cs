@@ -101,17 +101,27 @@ namespace MazeGame.Services
             var ballCenter = new Vector2((int)movingObject.Position.X + ballRadius, (int)movingObject.Position.Y + ballRadius);
 
             // Detect if the ball object is within the screen bounds.
-            float nx = Math.Max(obstacleBounds.Left, Math.Min(obstacleBounds.Right, ballCenter.X));
-            float ny = Math.Max(obstacleBounds.Top, Math.Min(obstacleBounds.Bottom, ballCenter.Y));
+            float nx = Math.Max(obstacleBounds.Left, Math.Min(obstacleBounds.Right, (int)ballCenter.X));
+            float ny = Math.Max(obstacleBounds.Top, Math.Min(obstacleBounds.Bottom, (int)ballCenter.Y));
             Vector2 ray_n = new Vector2(nx - ballCenter.X, ny - ballCenter.Y);
             float n_magnitude = ray_n.Length();
             float overlap = ballRadius - n_magnitude;
             if (overlap > 0)
             {
                 Vector2 n_normal = (-1) * Vector2.Normalize(ray_n);
-                //Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap);
-                movingObject.Velocity = Vector2.Reflect(movingObject.Velocity, n_normal);
-                newPosition += n_normal * overlap + movingObject.Velocity;
+                Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap + " ray_n " + ray_n);
+                if (ray_n == Vector2.Zero)
+                {
+                    Console.WriteLine("first");
+                    movingObject.Velocity = -movingObject.Velocity;
+                    newPosition += overlap * Vector2.Normalize(movingObject.Velocity);
+                }
+                else
+                {
+                    Console.WriteLine("second");
+                    movingObject.Velocity = Vector2.Reflect(movingObject.Velocity, n_normal);
+                    newPosition += n_normal * overlap + movingObject.Velocity;
+                }
             }
 
             // Set the new position of the ball.
