@@ -101,8 +101,8 @@ namespace MazeGame.Services
             var ballCenter = new Vector2((int)movingObject.Position.X + ballRadius, (int)movingObject.Position.Y + ballRadius);
 
             // Detect if the ball object is within the screen bounds.
-            float nx = Math.Max(obstacleBounds.Left, Math.Min(obstacleBounds.Right, (int)ballCenter.X));
-            float ny = Math.Max(obstacleBounds.Top, Math.Min(obstacleBounds.Bottom, (int)ballCenter.Y));
+            float nx = Math.Max(obstacleBounds.Left, Math.Min(obstacleBounds.Right, ballCenter.X));
+            float ny = Math.Max(obstacleBounds.Top, Math.Min(obstacleBounds.Bottom, ballCenter.Y));
             Vector2 ray_n = new Vector2(nx - ballCenter.X, ny - ballCenter.Y);
             float n_magnitude = ray_n.Length();
             float overlap = ballRadius - n_magnitude;

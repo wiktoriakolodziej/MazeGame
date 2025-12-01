@@ -17,6 +17,7 @@ namespace MazeGame.Maze
         private readonly Rectangle _screen = screen;
         private readonly int _cellWidth = screen.Width / maze.Rows;
         private readonly int _cellHeight = screen.Height / maze.Columns;
+        private Vector2 _cellScale => new Vector2((float)_cellWidth/_maze.Grid[0, 0].Texture.Width, (float)_cellHeight/ _maze.Grid[0, 0].Texture.Height);
 
         public void ResolveCollisions()
         {
@@ -55,13 +56,13 @@ namespace MazeGame.Maze
                 for (var y = 0; y < _maze.Columns; y++)
                 {
                     var source = new Rectangle(x * _cellWidth, y * _cellHeight, _cellWidth, _cellHeight);
-                    Draw(_maze.Grid[x,y].Texture, new Vector2(x * _cellWidth, y * _cellHeight), source);
+                    Draw(_maze.Grid[x,y].Texture, new Vector2(x * _cellWidth, y * _cellHeight));
                 }
             }
         }
-        private void Draw(Texture2D texture, Vector2 position, Rectangle source)
+        private void Draw(Texture2D texture, Vector2 position)
         {
-            spriteBatch.Draw(texture, position, source, Color.White);
+            spriteBatch.Draw(texture, position, null, Color.White, 0.0f, Vector2.Zero, _cellScale, SpriteEffects.None, 0.0f);
         }
 
         public Rectangle GetStartRectangle()
