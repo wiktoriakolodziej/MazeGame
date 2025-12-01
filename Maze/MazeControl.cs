@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-using Android.Graphics;
-using Java.Lang;
-using Java.Util;
+﻿using Java.Lang;
 using MazeGame.Graphics;
 using MazeGame.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace MazeGame.Maze
@@ -25,7 +22,7 @@ namespace MazeGame.Maze
         {
             var (mObjectXIndex, mObjectYIndex) = GetCellIndices(_movingObject.Position);
             var adjacentCells = GetAdjacentCells(mObjectXIndex, mObjectYIndex);
-            _physicsService.OutsideBounce(_movingObject, adjacentCells);
+            _physicsService.MoveCircleWithCCD(_movingObject, adjacentCells);
         }
 
         private (int, int) GetCellIndices(Vector2 position)
