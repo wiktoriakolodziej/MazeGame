@@ -79,10 +79,14 @@ namespace MazeGame.Services
                 (int)movingObject.Width,
                 (int)movingObject.Height
             );
+            //Console.WriteLine(ballBounds);
+            //foreach ( var obstacle in obstaclesBounds ) Console.WriteLine(obstacle);
             var obstacles = obstaclesBounds.Where(r => r.Intersects(ballBounds));
+            //Console.WriteLine(obstacles.Count());
             if (!obstacles.Any())
             {
                 movingObject.Position += movingObject.Velocity;
+                movingObject.Velocity *= 0.99f;
                 return;
             }
 
@@ -112,13 +116,13 @@ namespace MazeGame.Services
                 Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap + " ray_n " + ray_n);
                 if (ray_n == Vector2.Zero)
                 {
-                    Console.WriteLine("first");
+                    //Console.WriteLine("first");
                     movingObject.Velocity = -movingObject.Velocity;
                     newPosition += overlap * Vector2.Normalize(movingObject.Velocity);
                 }
                 else
                 {
-                    Console.WriteLine("second");
+                    //Console.WriteLine("second");
                     movingObject.Velocity = Vector2.Reflect(movingObject.Velocity, n_normal);
                     newPosition += n_normal * overlap + movingObject.Velocity;
                 }
