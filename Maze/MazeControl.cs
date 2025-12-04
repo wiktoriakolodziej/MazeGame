@@ -15,8 +15,8 @@ namespace MazeGame.Maze
         private readonly Sprite _movingObject = movingObject;
         private readonly SpriteBatch _spriteBatch = spriteBatch;
         private readonly Rectangle _screen = screen;
-        private readonly int _cellWidth = screen.Width / maze.Rows;
-        private readonly int _cellHeight = screen.Height / maze.Columns;
+        private readonly int _cellWidth = screen.Width / maze.Columns;
+        private readonly int _cellHeight = screen.Height / maze.Rows;
         private Vector2 _cellScale => new Vector2((float)_cellWidth/_maze.Grid[0, 0].Texture.Width, (float)_cellHeight/ _maze.Grid[0, 0].Texture.Height);
 
         public void ResolveCollisions()
@@ -34,10 +34,10 @@ namespace MazeGame.Maze
 
         private (int, int) GetCellIndices(Vector2 position)
         {
-            var cellWith = _screen.Width / _maze.Rows;
-            var cellHeight = _screen.Height / _maze.Columns;
-            var xIndex = (int)(position.X / cellWith);
-            var yIndex = (int)(position.Y / cellHeight);
+            var cellWith = _screen.Width / _maze.Columns;
+            var cellHeight = _screen.Height / _maze.Rows;
+            var yIndex = (int)(position.X / cellWith);
+            var xIndex = (int)(position.Y / cellHeight);
             return (xIndex, yIndex);
         }
         private bool CheckEnd()
@@ -46,7 +46,7 @@ namespace MazeGame.Maze
             if (!endPoint.HasValue)
                 return false;
             var (endX, endY) = endPoint.Value;
-            var endRect = new Rectangle(endX * _cellWidth, endY * _cellHeight, _cellWidth, _cellHeight);
+            var endRect = new Rectangle(endY * _cellWidth, endX * _cellHeight, _cellWidth, _cellHeight);
             var ballBounds = new Rectangle(
                 (int)movingObject.Position.X,
                 (int)movingObject.Position.Y,
@@ -64,7 +64,7 @@ namespace MazeGame.Maze
                 for (var y = yIndex - radius; y <= yIndex + radius; y++)
                 {
                     if (x >= 0 && x < _maze.Rows && y >= 0 && y < _maze.Columns && _maze.Grid[x,y].Type == CellType.Wall)
-                        adjacentCells.Add(new Rectangle(x * _cellWidth, y * _cellHeight, _cellWidth, _cellHeight));
+                        adjacentCells.Add(new Rectangle(y * _cellWidth, x * _cellHeight, _cellWidth, _cellHeight));
                 }
             }
             return adjacentCells;
@@ -76,8 +76,8 @@ namespace MazeGame.Maze
             {
                 for (var y = 0; y < _maze.Columns; y++)
                 {
-                    var source = new Rectangle(x * _cellWidth, y * _cellHeight, _cellWidth, _cellHeight);
-                    Draw(_maze.Grid[x,y].Texture, new Vector2(x * _cellWidth, y * _cellHeight));
+                    var source = new Rectangle(y * _cellWidth, x * _cellHeight, _cellWidth, _cellHeight);
+                    Draw(_maze.Grid[x,y].Texture, new Vector2(y * _cellWidth, x * _cellHeight));
                 }
             }
         }
