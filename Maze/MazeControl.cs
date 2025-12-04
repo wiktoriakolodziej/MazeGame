@@ -1,8 +1,8 @@
-﻿using Java.Lang;
-using MazeGame.Graphics;
+﻿using MazeGame.Graphics;
 using MazeGame.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Color = Microsoft.Xna.Framework.Color;
 
@@ -35,14 +35,14 @@ namespace MazeGame.Maze
             return (xIndex, yIndex);
         }
 
-        private List<Rectangle> GetAdjacentCells(int xIndex, int yIndex, int radius = 2)
+        private List<Rectangle> GetAdjacentCells(int xIndex, int yIndex, int radius = 1)
         {
             var adjacentCells = new List<Rectangle>();
             for (var x = xIndex - radius; x <= xIndex + radius; x++)
             {
                 for (var y = yIndex - radius; y <= yIndex + radius; y++)
                 {
-                    if (x >= 0 && x < _maze.Rows && y >= 0 && y < _maze.Columns && (x == xIndex || y == yIndex) && _maze.Grid[x,y].Type == CellType.Wall)
+                    if (x >= 0 && x < _maze.Rows && y >= 0 && y < _maze.Columns && _maze.Grid[x,y].Type == CellType.Wall)
                         adjacentCells.Add(new Rectangle(x * _cellWidth, y * _cellHeight, _cellWidth, _cellHeight));
                 }
             }
