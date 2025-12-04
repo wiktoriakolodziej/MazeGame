@@ -48,7 +48,8 @@ namespace MazeGame.Maze
         {
             var mazeTexture2D = contentManager.Load<Texture2D>("Images/maze_wall");
             var emptyTexture2D = contentManager.Load<Texture2D>("Images/maze_path");
-           
+            var endTexture2D = contentManager.Load<Texture2D>("Images/maze_end");
+
             var wall  = new MazeElement(CellType.Wall, mazeTexture2D);
             var empty  = new MazeElement(CellType.Path, emptyTexture2D);
 
@@ -66,7 +67,7 @@ namespace MazeGame.Maze
                         '#' => wall,
                         '.' => empty,
                         'S' => new MazeElement(CellType.Start, emptyTexture2D),
-                        'E' => new MazeElement(CellType.End, emptyTexture2D),
+                        'E' => new MazeElement(CellType.End, endTexture2D),
                         _ => throw new System.Exception("Invalid character in maze file.")
                     };
                 }

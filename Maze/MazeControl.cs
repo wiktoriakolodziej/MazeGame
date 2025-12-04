@@ -21,6 +21,12 @@ namespace MazeGame.Maze
 
         public void ResolveCollisions()
         {
+            if (CheckEnd())
+            {
+                var ballStartPoint = GetStartRectangle();
+                _movingObject.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
+                _movingObject.Velocity = Vector2.Zero;
+            }
             var (mObjectXIndex, mObjectYIndex) = GetCellIndices(_movingObject.Position);
             var adjacentCells = GetAdjacentCells(mObjectXIndex, mObjectYIndex);
             _physicsService.OutsideBounce(_movingObject, adjacentCells);
@@ -33,6 +39,21 @@ namespace MazeGame.Maze
             var xIndex = (int)(position.X / cellWith);
             var yIndex = (int)(position.Y / cellHeight);
             return (xIndex, yIndex);
+        }
+        private bool CheckEnd()
+        {
+            var endPoint = _maze.EndPosition;
+            if (!endPoint.HasValue)
+                return false;
+            var (endX, endY) = endPoint.Value;
+            var endRect = new Rectangle(endX * _cellWidth, endY * _cellHeight, _cellWidth, _cellHeight);
+            var ballBounds = new Rectangle(
+                (int)movingObject.Position.X,
+                (int)movingObject.Position.Y,
+                (int)movingObject.Width,
+                (int)movingObject.Height
+            );
+            return endRect.Intersects(ballBounds);
         }
 
         private List<Rectangle> GetAdjacentCells(int xIndex, int yIndex, int radius = 2)
@@ -74,7 +95,7 @@ namespace MazeGame.Maze
                 return new Rectangle(0, 0, (int)scale, (int)scale);
             
             var (x, y) = startPoint.Value;
-            return new Rectangle(x * _cellWidth, y * _cellHeight, (int)scale, (int)scale);
+            return new Rectangle(x * _cellWidth + 3, y * _cellHeight + 3, (int)scale, (int)scale);
         }
     }
 }
