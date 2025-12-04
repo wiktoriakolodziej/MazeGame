@@ -21,6 +21,7 @@ namespace MazeGame
         private Sprite _ball;
         private Rectangle _screenBounds;
         private MazeControl _mazeControl;
+        private Texture2D _debugLine; // dbg
 
         public Game1()
         {
@@ -58,7 +59,8 @@ namespace MazeGame
             _ball = new Sprite(Content.Load<Texture2D>("Images/ball"),
                 new Vector2(10, 10));
             _accelerometerService.SetObject(_ball);
-            
+            _debugLine = Content.Load<Texture2D>("Images/debug_line"); // dbg
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -82,6 +84,7 @@ namespace MazeGame
 
             _mazeControl.DrawMaze();
             _ball.Draw(_spriteBatch);
+            _spriteBatch.Draw(_debugLine, new Vector2((float)(_ball.Position.X + 0.5*_ball.Width), (float)(_ball.Position.Y + 0.5*_ball.Height)), null, Color.White, (float)Math.Atan2(_accelerometerService.accReading.Y, _accelerometerService.accReading.X), Vector2.Zero, Vector2.One, SpriteEffects.None, 0.0f); // dbg
 
             _spriteBatch.End();
 
