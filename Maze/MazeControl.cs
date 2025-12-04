@@ -34,9 +34,9 @@ namespace MazeGame.Maze
 
         private (int, int) GetCellIndices(Vector2 position)
         {
-            var cellWith = _screen.Width / _maze.Columns;
+            var screenWidth = _screen.Width / _maze.Columns;
             var cellHeight = _screen.Height / _maze.Rows;
-            var yIndex = (int)(position.X / cellWith);
+            var yIndex = (int)(position.X / screenWidth);
             var xIndex = (int)(position.Y / cellHeight);
             return (xIndex, yIndex);
         }
