@@ -1,5 +1,6 @@
 ﻿using MazeGame.Graphics;
 using MazeGame.Maze;
+using MazeGame.Scenes;
 using MazeGame.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -15,13 +16,11 @@ namespace MazeGame
     public class Game1 : Game
     {
         private readonly GraphicsDeviceManager _graphics;
-        private readonly PhysicsService _physicsService;
         private SpriteBatch _spriteBatch;
-        private readonly AccelerometerService _accelerometerService;
-        private Sprite _ball;
-        private Rectangle _screenBounds;
-        private MazeControl _mazeControl;
-        private Texture2D _debugLine; // dbg
+        
+
+        private Scene _activeScene;
+        private Scene _nextScene;
 
         public Game1()
         {
@@ -32,34 +31,17 @@ namespace MazeGame
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.ApplyChanges();
-            _physicsService = new PhysicsService();
-            _accelerometerService = new AccelerometerService();
         }
 
         protected override void Initialize()
         {
             base.Initialize();
-            _screenBounds = new Rectangle(
-                0,
-                0,
-                GraphicsDevice.PresentationParameters.BackBufferWidth,
-                GraphicsDevice.PresentationParameters.BackBufferHeight
-            );
-            var maze = Maze.Maze.CreateFromFile("maze.txt", Content);
-            _mazeControl = new MazeControl(maze, _ball, _spriteBatch, _screenBounds);
-            var ballStartPoint = _mazeControl.GetStartRectangle();
-            _ball.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
-            //_ball.Scale = new Vector2(0.8f);
-            _ball.TexColor = Color.Aqua;
+            ChangeScene(new GameScene(Content, GraphicsDevice, _spriteBatch));
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _ball = new Sprite(Content.Load<Texture2D>("Images/ball"),
-                new Vector2(10, 10));
-            _accelerometerService.SetObject(_ball);
-            _debugLine = Content.Load<Texture2D>("Images/debug_line"); // dbg
 
 
             // TODO: use this.Content to load your game content here
@@ -70,26 +52,70 @@ namespace MazeGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _physicsService.InsideBounce(_ball, _screenBounds);
-            _mazeControl.ResolveCollisions();
+
+            // if there is a next scene waiting to be switch to, then transition
+            // to that scene.
+            if (_nextScene != null)
+            {
+                TransitionScene();
+            }
+
+            // If there is an active scene, update it.
+            if (_activeScene != null)
+            {
+                _activeScene.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
-
-            _mazeControl.DrawMaze();
-            _ball.Draw(_spriteBatch);
-            _spriteBatch.Draw(_debugLine, new Vector2((float)(_ball.Position.X + 0.5*_ball.Width), (float)(_ball.Position.Y + 0.5*_ball.Height)), null, Color.White, (float)Math.Atan2(_accelerometerService.accReading.Y, _accelerometerService.accReading.X), Vector2.Zero, Vector2.One, SpriteEffects.None, 0.0f); // dbg
-
-            _spriteBatch.End();
+            // If there is an active scene, draw it.
+            if (_activeScene != null)
+            {
+                _activeScene.Draw(gameTime);
+            }
 
 
             base.Draw(gameTime);
+        }
+
+        public void ChangeScene(Scene next)
+        {
+            // Only set the next scene value if it is not the same
+            // instance as the currently active scene.
+            if (_activeScene != next)
+            {
+                _nextScene = next;
+            }
+        }
+
+        private void TransitionScene()
+        {
+            // If there is an active scene, dispose of it.
+            if (_activeScene != null)
+            {
+                _activeScene.Dispose();
+            }
+
+            // Force the garbage collector to collect to ensure memory is cleared.
+            GC.Collect();
+
+            // Change the currently active scene to the new scene.
+            _activeScene = _nextScene;
+
+            // Null out the next scene value so it does not trigger a change over and over.
+            _nextScene = null;
+
+            // If the active scene now is not null, initialize it.
+            // Remember, just like with Game, the Initialize call also calls the
+            // Scene.LoadContent
+            if (_activeScene != null)
+            {
+                _activeScene.Initialize();
+            }
         }
     }
 }
