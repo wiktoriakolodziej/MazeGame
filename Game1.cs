@@ -1,24 +1,26 @@
-﻿using MazeGame.Graphics;
-using MazeGame.Maze;
+﻿using Gum.Forms;
 using MazeGame.Scenes;
-using MazeGame.Services;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Framework.Devices.Sensors;
+using MonoGameGum;
 using System;
-using System.Collections.Generic;
+
 
 namespace MazeGame
 {
+    public enum ScreenType
+    {
+        Title,
+        Gameplay,
+        GameOver
+    }
 
     public class Game1 : Game
     {
         private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        public SpriteBatch _spriteBatch { get; private set; }
         
-
         private Scene _activeScene;
         private Scene _nextScene;
 
@@ -36,15 +38,15 @@ namespace MazeGame
         protected override void Initialize()
         {
             base.Initialize();
-            ChangeScene(new GameScene(Content, GraphicsDevice, _spriteBatch));
+            InitializeGum();
+            _activeScene.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-
-            // TODO: use this.Content to load your game content here
+            _activeScene = new TitleScene(GraphicsDevice, _spriteBatch, Content.ServiceProvider, Content.RootDirectory);
+            _activeScene.OnSceneChanged += ChangeScene;
         }
 
         protected override void Update(GameTime gameTime)
@@ -52,70 +54,72 @@ namespace MazeGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-
-            // if there is a next scene waiting to be switch to, then transition
-            // to that scene.
             if (_nextScene != null)
-            {
                 TransitionScene();
-            }
 
-            // If there is an active scene, update it.
             if (_activeScene != null)
-            {
                 _activeScene.Update(gameTime);
-            }
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-
-            // If there is an active scene, draw it.
             if (_activeScene != null)
-            {
                 _activeScene.Draw(gameTime);
-            }
-
 
             base.Draw(gameTime);
         }
 
-        public void ChangeScene(Scene next)
+        public void ChangeScene(ScreenType type)
         {
-            // Only set the next scene value if it is not the same
-            // instance as the currently active scene.
-            if (_activeScene != next)
+            switch (type)
             {
-                _nextScene = next;
+                case ScreenType.Title:
+                    _nextScene = new TitleScene(GraphicsDevice, _spriteBatch, Content.ServiceProvider, Content.RootDirectory);
+                    break;
+                case ScreenType.Gameplay:
+                    var _screenBounds = new Rectangle(0, 0,
+                        GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
+                        GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+                    _nextScene = new GameScene(_screenBounds, GraphicsDevice, _spriteBatch, Content.ServiceProvider, Content.RootDirectory);
+                    break;
+                case ScreenType.GameOver:
+                    break;
             }
+            _nextScene.OnSceneChanged += ChangeScene;
         }
 
         private void TransitionScene()
         {
-            // If there is an active scene, dispose of it.
-            if (_activeScene != null)
-            {
+            if (_activeScene is not null)
                 _activeScene.Dispose();
-            }
 
-            // Force the garbage collector to collect to ensure memory is cleared.
             GC.Collect();
-
-            // Change the currently active scene to the new scene.
             _activeScene = _nextScene;
-
-            // Null out the next scene value so it does not trigger a change over and over.
             _nextScene = null;
 
-            // If the active scene now is not null, initialize it.
-            // Remember, just like with Game, the Initialize call also calls the
-            // Scene.LoadContent
-            if (_activeScene != null)
-            {
+            if (_activeScene is not null)
                 _activeScene.Initialize();
-            }
+        }
+
+        private void InitializeGum()
+        {
+            // Initialize the Gum service. The second parameter specifies
+            // the version of the default visuals to use. V2 is the latest
+            // version.
+            GumService.Default.Initialize(this, DefaultVisualsVersion.V2);
+
+            // Tell the Gum service which content manager to use.  We will tell it to
+            // use the global content manager from our Core.
+            GumService.Default.ContentLoader.XnaContentManager = this.Content;
+
+            // The assets created for the UI were done so at 1/4th the size to keep the size of the
+            // texture atlas small.  So we will set the default canvas size to be 1/4th the size of
+            // the game's resolution then tell gum to zoom in by a factor of 4.
+            GumService.Default.CanvasWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / 4.0f;
+            GumService.Default.CanvasHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / 4.0f;
+            GumService.Default.Renderer.Camera.Zoom = 4.0f;
         }
     }
 }

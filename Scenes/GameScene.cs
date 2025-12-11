@@ -2,13 +2,8 @@
 using MazeGame.Maze;
 using MazeGame.Services;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MazeGame.Scenes;
 
@@ -20,23 +15,18 @@ public class GameScene : Scene
     private Rectangle _screenBounds;
     private MazeControl _mazeControl;
     private Texture2D _debugLine; // dbg
-    public GameScene(ContentManager gameContentManager, GraphicsDevice gameGraphicsDevice, SpriteBatch spriteBatch) : base(gameContentManager, gameGraphicsDevice, spriteBatch)
+    public GameScene(Rectangle screen, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IServiceProvider serviceProvider, string contentRoot) : base(graphicsDevice, spriteBatch, serviceProvider, contentRoot)
     {
         _physicsService = new PhysicsService();
         _accelerometerService = new AccelerometerService();
+        _screenBounds = screen;
     }
 
     public override void Initialize()
     {
         base.Initialize();
-        _screenBounds = new Rectangle(
-                0,
-                0,
-                Device.PresentationParameters.BackBufferWidth,
-                Device.PresentationParameters.BackBufferHeight
-            );
         var maze = Maze.Maze.CreateFromFile("maze.txt", Content);
-        _mazeControl = new MazeControl(maze, _ball, _spriteBatch, _screenBounds);
+        _mazeControl = new MazeControl(maze, _ball, SpriteBatch, _screenBounds);
         var ballStartPoint = _mazeControl.GetStartRectangle();
         _ball.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
         //_ball.Scale = new Vector2(0.8f);
@@ -59,15 +49,13 @@ public class GameScene : Scene
 
     public override void Draw(GameTime gameTime)
     {
-
-        Device.Clear(Color.CornflowerBlue);
-
-        _spriteBatch.Begin();
+        GraphicsDevice.Clear(Color.AliceBlue);
+        SpriteBatch.Begin();
 
         _mazeControl.DrawMaze();
-        _ball.Draw(_spriteBatch);
-        _spriteBatch.Draw(_debugLine, new Vector2((float)(_ball.Position.X + 0.5 * _ball.Width), (float)(_ball.Position.Y + 0.5 * _ball.Height)), null, Color.White, (float)Math.Atan2(_accelerometerService.accReading.Y, _accelerometerService.accReading.X), Vector2.Zero, Vector2.One, SpriteEffects.None, 0.0f); // dbg
+        _ball.Draw(SpriteBatch);
+        SpriteBatch.Draw(_debugLine, new Vector2((float)(_ball.Position.X + 0.5 * _ball.Width), (float)(_ball.Position.Y + 0.5 * _ball.Height)), null, Color.White, (float)Math.Atan2(_accelerometerService.accReading.Y, _accelerometerService.accReading.X), Vector2.Zero, Vector2.One, SpriteEffects.None, 0.0f); // dbg
 
-        _spriteBatch.End();
+        SpriteBatch.End();
     }
 }
