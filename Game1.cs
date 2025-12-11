@@ -87,7 +87,8 @@ namespace MazeGame
                 case ScreenType.Records:
                     break;
             }
-            _nextScene.OnSceneChanged += ChangeScene;
+            if(_nextScene is not null)
+                _nextScene.OnSceneChanged += ChangeScene;
         }
 
         private void TransitionScene()
