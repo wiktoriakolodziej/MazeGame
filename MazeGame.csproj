@@ -10,10 +10,9 @@
   <ItemGroup>
     <None Remove="Content\fonts\ 04B_30.spritefont" />
     <None Remove="Content\maze.txt" />
-    <None Remove="maze.txt" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="maze.txt">
+    <AndroidAsset Include="MazeSources\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AndroidAsset>
   </ItemGroup>
