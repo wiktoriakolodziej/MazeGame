@@ -13,7 +13,7 @@ namespace MazeGame
     {
         Title,
         Gameplay,
-        GameOver
+        Records
     }
 
     public class Game1 : Game
@@ -84,7 +84,7 @@ namespace MazeGame
                         GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
                     _nextScene = new GameScene(_screenBounds, GraphicsDevice, _spriteBatch, Content.ServiceProvider, Content.RootDirectory);
                     break;
-                case ScreenType.GameOver:
+                case ScreenType.Records:
                     break;
             }
             _nextScene.OnSceneChanged += ChangeScene;

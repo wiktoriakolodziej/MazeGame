@@ -114,12 +114,27 @@ public class TitleScene(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, 
         startButton.Text = "Start";
         startButton.Click += HandleStartClicked;
         _titleScreenButtonsPanel.AddChild(startButton);
+
+        var recordsButton = new Button();
+        recordsButton.Anchor(Gum.Wireframe.Anchor.BottomLeft);
+        recordsButton.Visual.X = 50;
+        recordsButton.Visual.Y = -60;
+        recordsButton.Visual.Width = 70;
+        recordsButton.Text = "Records";
+        recordsButton.Click += HandleRecordsClicked;
+        _titleScreenButtonsPanel.AddChild(recordsButton);
     }
 
     private void HandleStartClicked(object sender, EventArgs e)
     {
 
         OnSceneChanged(ScreenType.Gameplay);
+    }
+
+    private void HandleRecordsClicked(object sender, EventArgs e)
+    {
+
+        OnSceneChanged(ScreenType.Records);
     }
 
     private void InitializeUI()
