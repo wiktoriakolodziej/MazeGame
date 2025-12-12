@@ -15,7 +15,8 @@ namespace MazeGame
     {
         Title,
         Gameplay,
-        Records
+        Records,
+        LevelFinished
     }
 
     public class Game1 : Game
@@ -89,7 +90,7 @@ namespace MazeGame
             base.Draw(gameTime);
         }
 
-        public void ChangeScene(ScreenType type)
+        public static void ChangeScene(ScreenType type)
         {
             switch (type)
             {
@@ -102,6 +103,9 @@ namespace MazeGame
                         GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
                     _nextScene = new GameScene(_screenBounds);
                     break;
+                case ScreenType.LevelFinished: 
+                    _nextScene = new LevelFinishedScene(); 
+                    break;
                 case ScreenType.Records:
                     break;
             }
@@ -109,7 +113,7 @@ namespace MazeGame
                 _nextScene.OnSceneChanged += ChangeScene;
         }
 
-        private void TransitionScene()
+        private static void TransitionScene()
         {
             if (_activeScene is not null)
                 _activeScene.Dispose();

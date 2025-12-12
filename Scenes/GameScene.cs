@@ -15,7 +15,6 @@ public class GameScene(Rectangle screen) : Scene
     private Rectangle _screenBounds = screen;
     private MazeControl _mazeControl;
     private Texture2D _debugLine; // dbg
-    private long timeScore = Game1.timeScore;
     private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
 
     public override void Initialize()
@@ -43,8 +42,9 @@ public class GameScene(Rectangle screen) : Scene
         if (_mazeControl.ResolveCollisions())
         {
             watch.Stop();
-            timeScore = watch.ElapsedMilliseconds;
-            Console.WriteLine(timeScore);
+            Game1.timeScore = watch.ElapsedMilliseconds;
+            Console.WriteLine(Game1.timeScore);
+            OnSceneChanged(ScreenType.LevelFinished);
         }
     }
 
