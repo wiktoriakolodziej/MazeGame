@@ -11,7 +11,7 @@ using static Android.Renderscripts.ScriptGroup;
 
 namespace MazeGame.Scenes;
 
-public class TitleScene(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IServiceProvider serviceProvider, string contentRoot) : Scene(graphicsDevice, spriteBatch, serviceProvider, contentRoot)
+public class TitleScene : Scene
 {
     private const string DUNGEON_TEXT = "Maze";
     private const string SLIME_TEXT = "Ball";

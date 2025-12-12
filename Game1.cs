@@ -1,9 +1,11 @@
 ﻿using Gum.Forms;
 using MazeGame.Scenes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGameGum;
+using Syncfusion.XForms.Android.Core;
 using System;
 
 
@@ -18,15 +20,30 @@ namespace MazeGame
 
     public class Game1 : Game
     {
-        private readonly GraphicsDeviceManager _graphics;
-        public SpriteBatch _spriteBatch { get; private set; }
+        internal static Game1 s_instance;
+        public static Game1 Instance => s_instance;
+
+        public static GraphicsDeviceManager _graphics { get; private set; }
+        public static new GraphicsDevice GraphicsDevice { get; private set; }
+        public static SpriteBatch _spriteBatch { get; private set; }
+        public static new ContentManager Content { get; private set; }
+        public static long timeScore = 0;
         
-        private Scene _activeScene;
-        private Scene _nextScene;
+        private static Scene _activeScene;
+        private static Scene _nextScene;
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);    
+            if (s_instance != null)
+            {
+                throw new InvalidOperationException($"Only a single Core instance can be created");
+            }
+
+            // Store reference to engine for global member access.
+            s_instance = this;
+
+            _graphics = new GraphicsDeviceManager(this);
+            Content = base.Content;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             _graphics.IsFullScreen = true;
@@ -38,15 +55,16 @@ namespace MazeGame
         protected override void Initialize()
         {
             base.Initialize();
+            GraphicsDevice = base.GraphicsDevice;
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _activeScene = new TitleScene();
+            _activeScene.OnSceneChanged += ChangeScene;
             InitializeGum();
             _activeScene.Initialize();
         }
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _activeScene = new TitleScene(GraphicsDevice, _spriteBatch, Content.ServiceProvider, Content.RootDirectory);
-            _activeScene.OnSceneChanged += ChangeScene;
         }
 
         protected override void Update(GameTime gameTime)
@@ -76,13 +94,13 @@ namespace MazeGame
             switch (type)
             {
                 case ScreenType.Title:
-                    _nextScene = new TitleScene(GraphicsDevice, _spriteBatch, Content.ServiceProvider, Content.RootDirectory);
+                    _nextScene = new TitleScene();
                     break;
                 case ScreenType.Gameplay:
                     var _screenBounds = new Rectangle(0, 0,
                         GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
                         GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
-                    _nextScene = new GameScene(_screenBounds, GraphicsDevice, _spriteBatch, Content.ServiceProvider, Content.RootDirectory);
+                    _nextScene = new GameScene(_screenBounds);
                     break;
                 case ScreenType.Records:
                     break;
@@ -113,7 +131,7 @@ namespace MazeGame
 
             // Tell the Gum service which content manager to use.  We will tell it to
             // use the global content manager from our Core.
-            GumService.Default.ContentLoader.XnaContentManager = this.Content;
+            GumService.Default.ContentLoader.XnaContentManager = Game1.Content;
 
             // The assets created for the UI were done so at 1/4th the size to keep the size of the
             // texture atlas small.  So we will set the default canvas size to be 1/4th the size of

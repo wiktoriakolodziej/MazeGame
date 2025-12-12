@@ -19,17 +19,19 @@ namespace MazeGame.Maze
         private readonly int _cellHeight = screen.Height / maze.Rows;
         private Vector2 _cellScale => new Vector2((float)_cellWidth/_maze.Grid[0, 0].Texture.Width, (float)_cellHeight/ _maze.Grid[0, 0].Texture.Height);
 
-        public void ResolveCollisions()
+        public bool ResolveCollisions()
         {
             if (CheckEnd())
             {
                 var ballStartPoint = GetStartRectangle();
                 _movingObject.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
                 _movingObject.Velocity = Vector2.Zero;
+                return true;
             }
             var (mObjectXIndex, mObjectYIndex) = GetCellIndices(_movingObject.Position);
             var adjacentCells = GetAdjacentCells(mObjectXIndex, mObjectYIndex);
             _physicsService.OutsideBounce(_movingObject, adjacentCells);
+            return false;
         }
 
         private (int, int) GetCellIndices(Vector2 position)

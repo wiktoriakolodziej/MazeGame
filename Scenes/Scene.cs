@@ -1,16 +1,28 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Syncfusion.XForms.Android.Core;
 using System;
 
 namespace MazeGame.Scenes;
 
-public abstract class Scene(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IServiceProvider serviceProvider, string contentRoot) : IDisposable
+public abstract class Scene : IDisposable
 {
-    protected ContentManager Content { get; } = new (serviceProvider, contentRoot);
+    public Scene()
+    {
+        // Create a content manager for the scene
+        Content = new ContentManager(Game1.Content.ServiceProvider);
+
+        // Set the root directory for content to the same as the root directory
+        // for the game's content.
+        Content.RootDirectory = Game1.Content.RootDirectory;
+        SpriteBatch = Game1._spriteBatch;
+        GraphicsDevice = Game1.GraphicsDevice;
+    }
+    protected ContentManager Content { get; }
     public bool IsDisposed { get; private set; }
-    protected SpriteBatch SpriteBatch { get; } = spriteBatch;
-    protected GraphicsDevice GraphicsDevice { get; } = graphicsDevice;
+    protected SpriteBatch SpriteBatch { get; }
+    protected GraphicsDevice GraphicsDevice { get; }
 
     public Action<ScreenType> OnSceneChanged { get; set; }
 

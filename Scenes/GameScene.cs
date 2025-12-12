@@ -7,20 +7,16 @@ using System;
 
 namespace MazeGame.Scenes;
 
-public class GameScene : Scene
+public class GameScene(Rectangle screen) : Scene
 {
-    private readonly AccelerometerService _accelerometerService;
-    private readonly PhysicsService _physicsService;
+    private readonly AccelerometerService _accelerometerService = new AccelerometerService();
+    private readonly PhysicsService _physicsService = new PhysicsService();
     private Sprite _ball;
-    private Rectangle _screenBounds;
+    private Rectangle _screenBounds = screen;
     private MazeControl _mazeControl;
     private Texture2D _debugLine; // dbg
-    public GameScene(Rectangle screen, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch, IServiceProvider serviceProvider, string contentRoot) : base(graphicsDevice, spriteBatch, serviceProvider, contentRoot)
-    {
-        _physicsService = new PhysicsService();
-        _accelerometerService = new AccelerometerService();
-        _screenBounds = screen;
-    }
+    private long timeScore = Game1.timeScore;
+    private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
 
     public override void Initialize()
     {
@@ -44,7 +40,12 @@ public class GameScene : Scene
     public override void Update(GameTime gameTime)
     {
         _physicsService.InsideBounce(_ball, _screenBounds);
-        _mazeControl.ResolveCollisions();
+        if (_mazeControl.ResolveCollisions())
+        {
+            watch.Stop();
+            timeScore = watch.ElapsedMilliseconds;
+            Console.WriteLine(timeScore);
+        }
     }
 
     public override void Draw(GameTime gameTime)
