@@ -36,12 +36,17 @@ public class RecordScene : Scene
         using var connection = new SqliteConnection($"Data Source={Game1.sqlitePath}");
         connection.Open();
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT time FROM scores WHERE maze_size LIKE \"10x10\"";
+        command.CommandText = "SELECT time FROM scores WHERE maze_size LIKE \"10x10\" ORDER BY time ASC"; //TODO zmienic to zeby wspierac rozne rozmiary planszy
         using var reader = command.ExecuteReader();
 
         while (reader.Read())
         {
             var score = reader.GetString(0);
+            var dot = score.IndexOf("."); // TODO sprobowac zrobic normalne zaokraglanie, problem z przecinkami/kropkami
+            if (dot >= 0 && score.Length > dot + 3)
+            {
+                score = score.Substring(0, dot + 3);
+            }
 
             sb.AppendLine(score);
         }

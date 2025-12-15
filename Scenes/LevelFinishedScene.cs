@@ -1,5 +1,6 @@
 ﻿using Gum.Forms.Controls;
 using Gum.Forms.DefaultVisuals;
+using Microsoft.Data.Sqlite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameGum;
@@ -39,6 +40,14 @@ public class LevelFinishedScene : Scene
         timeOrigin = _robotoFont.MeasureString(time_text) * 0.5f;
         timePos = yourtimePos;
         timePos.Y += _robotoFont.MeasureString(YOURTIME_TEXT).Y * 2.0f;
+
+        using var connection = new SqliteConnection($"Data Source={Game1.sqlitePath}");
+        connection.Open();
+        var command = connection.CreateCommand();
+        command.CommandText = "INSERT INTO scores VALUES(NULL, $size, $time)";
+        command.Parameters.AddWithValue("$size", Game1.mazeSize);
+        command.Parameters.AddWithValue("$time", Game1.timeScore / 1000.0f);
+        command.ExecuteNonQuery();
 
         InitializeUI();
     }
