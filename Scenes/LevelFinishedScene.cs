@@ -1,4 +1,5 @@
 ﻿using Gum.Forms.Controls;
+using Gum.Forms.DefaultVisuals;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameGum;
@@ -17,6 +18,7 @@ public class LevelFinishedScene : Scene
     private SpriteFont _robotoFont;
     private Color backgroundColor = new Color(2, 62, 138, 255);
     private Color textColor = new Color(173, 232, 244);
+    private Color buttonColor = new Color(6, 212, 153);
 
     private Vector2 congratsPos;
     private Vector2 congratsOrigin;
@@ -84,6 +86,8 @@ public class LevelFinishedScene : Scene
         nextLevelButton.Visual.Height = buttonHeight;
         nextLevelButton.Visual.X = buttonWidth * 0.05f;
         nextLevelButton.Visual.Y = buttonHeight * -0.2f;
+        var nextVisual = (ButtonVisual)nextLevelButton.Visual;
+        nextVisual.Background.Color = buttonColor;
         nextLevelButton.Text = "NEXT LEVEL";
         nextLevelButton.Click += HandleNextLevelClicked;
         panel.AddChild(nextLevelButton);
@@ -96,6 +100,8 @@ public class LevelFinishedScene : Scene
         backToMenuButton.Visual.Height = buttonHeight;
         backToMenuButton.Visual.X = buttonWidth * -0.05f;
         backToMenuButton.Visual.Y = buttonHeight * -0.2f;
+        var menuVisual = (ButtonVisual)backToMenuButton.Visual;
+        menuVisual.Background.Color = buttonColor;
         backToMenuButton.Text = "MAIN MENU";
         backToMenuButton.Click += HandleBackToMenuClicked;
         panel.AddChild(backToMenuButton);

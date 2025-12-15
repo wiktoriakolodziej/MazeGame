@@ -1,5 +1,6 @@
 ﻿using Gum.Forms;
 using MazeGame.Scenes;
+using Microsoft.Data.Sqlite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGameGum;
 using Syncfusion.XForms.Android.Core;
 using System;
+using System.IO;
 
 
 namespace MazeGame
@@ -29,6 +31,8 @@ namespace MazeGame
         public static SpriteBatch _spriteBatch { get; private set; }
         public static new ContentManager Content { get; private set; }
         public static long timeScore = 0;
+        public static string mazeSize = "10x10";
+        public static string sqlitePath = string.Empty;
         
         private static Scene _activeScene;
         private static Scene _nextScene;
@@ -62,6 +66,33 @@ namespace MazeGame
             _activeScene.OnSceneChanged += ChangeScene;
             InitializeGum();
             _activeScene.Initialize();
+
+            sqlitePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("/.config", ""), "scores.db");
+            //File.Delete("/data/user/0/MazeGame.MazeGame/files/scores.db");
+            using var connection = new SqliteConnection($"Data Source={sqlitePath}");
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = """
+                CREATE TABLE IF NOT EXISTS scores (
+                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    maze_size TEXT NOT NULL,
+                    time REAL NOT NULL
+                );
+                """;
+            command.ExecuteNonQuery();
+
+            command.CommandText = "INSERT INTO scores VALUES(NULL, \"10x10\", 35.143)";
+            command.ExecuteNonQuery();
+
+            command.CommandText = "SELECT * FROM scores";
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var name = reader.GetString(0);
+
+                Console.WriteLine($"Hello, {name}!");
+            }
         }
 
         protected override void LoadContent()

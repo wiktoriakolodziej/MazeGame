@@ -91,13 +91,14 @@ namespace MazeGame.Maze
         public Rectangle GetStartRectangle()
         {
             var startPoint = _maze.StartPosition;
-            var scale = Math.Min(_cellHeight, _cellWidth) * 0.8f;
+            var scale = Math.Min(_cellHeight, _cellWidth) * 0.7f;
 
             if (!startPoint.HasValue)
                 return new Rectangle(0, 0, (int)scale, (int)scale);
             
             var (x, y) = startPoint.Value;
-            return new Rectangle(x * _cellWidth + 3, y * _cellHeight + 3, (int)scale, (int)scale);
+            // Wspolrzedne w pozostalych funkcjach wydaja sie ok, a tu trzeba je zamienic
+            return new Rectangle(y * _cellWidth + 3, x * _cellHeight + 3, (int)scale, (int)scale);
         }
     }
 }
