@@ -81,18 +81,18 @@ namespace MazeGame
                 """;
             command.ExecuteNonQuery();
 
-            command.CommandText = "INSERT INTO scores VALUES(NULL, \"10x10\", 35.143)";
-            command.ExecuteNonQuery();
+            //command.CommandText = "INSERT INTO scores VALUES(NULL, \"10x10\", 35.143)";
+            //command.ExecuteNonQuery();
 
-            command.CommandText = "SELECT * FROM scores";
-            using var reader = command.ExecuteReader();
+            //command.CommandText = "SELECT * FROM scores";
+            //using var reader = command.ExecuteReader();
 
-            while (reader.Read())
-            {
-                var name = reader.GetString(0);
+            //while (reader.Read())
+            //{
+            //    var name = reader.GetString(0);
 
-                Console.WriteLine($"Hello, {name}!");
-            }
+            //    Console.WriteLine($"Hello, {name}!");
+            //}
         }
 
         protected override void LoadContent()
@@ -138,6 +138,7 @@ namespace MazeGame
                     _nextScene = new LevelFinishedScene(); 
                     break;
                 case ScreenType.Records:
+                    _nextScene = new RecordScene();
                     break;
             }
             if(_nextScene is not null)
