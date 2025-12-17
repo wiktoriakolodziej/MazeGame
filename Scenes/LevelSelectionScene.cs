@@ -1,13 +1,11 @@
 ﻿using Gum.Converters;
 using Gum.DataTypes;
 using Gum.Forms.Controls;
-using Java.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameGum;
 using System;
 using System.Collections.Generic;
-using Gum.Forms.DefaultVisuals;
 
 namespace MazeGame.Scenes;
 
@@ -117,6 +115,21 @@ public class LevelSelectionScene(string size) : Scene
             row++;
         }
 
+        var buttonBack = new Button()
+        {
+            Text = "<",
+            Width = 30,
+            Height = 5
+        };
+        buttonBack.Anchor(Gum.Wireframe.Anchor.BottomLeft);
+        buttonBack.X = 10;
+        buttonBack.Y = -10;
+        buttonBack.Click += HandleBackClicked;
+        _levelSelectionScreenButtonsPanel.AddChild(buttonBack);
+
+        if (buttons.Count < 5)
+            return;
+
         var buttonDown = new Button()
         {
             Text = "v",
@@ -141,17 +154,7 @@ public class LevelSelectionScene(string size) : Scene
         buttonUp.Click += HandleScrollClicked;
         _levelSelectionScreenButtonsPanel.AddChild(buttonUp);
 
-        var buttonBack = new Button()
-        {
-            Text = "<",
-            Width = 30,
-            Height = 5
-        };
-        buttonBack.Anchor(Gum.Wireframe.Anchor.BottomLeft);
-        buttonBack.X = 10;
-        buttonBack.Y = -10;
-        buttonBack.Click += HandleBackClicked;
-        _levelSelectionScreenButtonsPanel.AddChild(buttonBack);
+       
     }
 
     private void HandleBackClicked(object sender, EventArgs e)
