@@ -17,6 +17,48 @@
     </AndroidAsset>
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Remove="MazeSources\size30x30 - Copy\**" />
+    <AndroidAsset Remove="MazeSources\size40x40 - Copy\**" />
+    <AndroidAsset Remove="MazeSources\size50x50 - Copy\**" />
+    <AndroidAsset Remove="MazeSources\size60x60 - Copy\**" />
+    <AndroidJavaSource Remove="MazeSources\size30x30 - Copy\**" />
+    <AndroidJavaSource Remove="MazeSources\size40x40 - Copy\**" />
+    <AndroidJavaSource Remove="MazeSources\size50x50 - Copy\**" />
+    <AndroidJavaSource Remove="MazeSources\size60x60 - Copy\**" />
+    <AndroidLibrary Remove="MazeSources\size30x30 - Copy\**" />
+    <AndroidLibrary Remove="MazeSources\size40x40 - Copy\**" />
+    <AndroidLibrary Remove="MazeSources\size50x50 - Copy\**" />
+    <AndroidLibrary Remove="MazeSources\size60x60 - Copy\**" />
+    <AndroidNativeLibrary Remove="MazeSources\size30x30 - Copy\**" />
+    <AndroidNativeLibrary Remove="MazeSources\size40x40 - Copy\**" />
+    <AndroidNativeLibrary Remove="MazeSources\size50x50 - Copy\**" />
+    <AndroidNativeLibrary Remove="MazeSources\size60x60 - Copy\**" />
+    <Compile Remove="MazeSources\size30x30 - Copy\**" />
+    <Compile Remove="MazeSources\size40x40 - Copy\**" />
+    <Compile Remove="MazeSources\size50x50 - Copy\**" />
+    <Compile Remove="MazeSources\size60x60 - Copy\**" />
+    <EmbeddedResource Remove="MazeSources\size30x30 - Copy\**" />
+    <EmbeddedResource Remove="MazeSources\size40x40 - Copy\**" />
+    <EmbeddedResource Remove="MazeSources\size50x50 - Copy\**" />
+    <EmbeddedResource Remove="MazeSources\size60x60 - Copy\**" />
+    <JavaSourceJar Remove="MazeSources\size30x30 - Copy\**" />
+    <JavaSourceJar Remove="MazeSources\size40x40 - Copy\**" />
+    <JavaSourceJar Remove="MazeSources\size50x50 - Copy\**" />
+    <JavaSourceJar Remove="MazeSources\size60x60 - Copy\**" />
+    <None Remove="MazeSources\size30x30 - Copy\**" />
+    <None Remove="MazeSources\size40x40 - Copy\**" />
+    <None Remove="MazeSources\size50x50 - Copy\**" />
+    <None Remove="MazeSources\size60x60 - Copy\**" />
+    <ProguardConfiguration Remove="MazeSources\size30x30 - Copy\**" />
+    <ProguardConfiguration Remove="MazeSources\size40x40 - Copy\**" />
+    <ProguardConfiguration Remove="MazeSources\size50x50 - Copy\**" />
+    <ProguardConfiguration Remove="MazeSources\size60x60 - Copy\**" />
+    <TransformFile Remove="MazeSources\size30x30 - Copy\**" />
+    <TransformFile Remove="MazeSources\size40x40 - Copy\**" />
+    <TransformFile Remove="MazeSources\size50x50 - Copy\**" />
+    <TransformFile Remove="MazeSources\size60x60 - Copy\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Gum.MonoGame" Version="2025.12.9.1" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.1" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
@@ -36,6 +78,10 @@
     <None Update="Content\Images\maze_wall.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MazeSources\size40x40\" />
+    <Folder Include="MazeSources\size30x30\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="CollectPackageReferences">
     <Message Text="Restoring dotnet tools (this might take a while depending on your internet speed and should only happen upon building your project for the first time, or after upgrading MonoGame, or clearing your nuget cache)" Importance="High" />

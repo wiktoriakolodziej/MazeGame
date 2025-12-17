@@ -1,22 +1,23 @@
-﻿using Gum.Forms.Controls;
+﻿using Gum.Converters;
+using Gum.DataTypes;
+using Gum.Forms.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameGum;
 using System;
-using Gum.Converters;
-using Gum.DataTypes;
-
+using System.Collections.Generic;
+using System.Text;
 
 namespace MazeGame.Scenes;
 
-public class TitleScene : Scene
+public class LevelSizeSelectionScene : Scene
 {
-    private const string TITLE = "Maze Ball";
+    private const string TITLE = "Choose size";
     private SpriteFont _font;
     private Vector2 _titleTextPos;
     private Vector2 _titleTextOrigin;
 
-    private Panel _titleScreenButtonsPanel;
+    private Panel _levelSelectionScreenButtonsPanel;
 
     private int _buttonWidthPercentage = 40;
     private int _buttonHeightPercentage = 10;
@@ -50,7 +51,7 @@ public class TitleScene : Scene
     {
         GraphicsDevice.Clear(new Color(32, 40, 78, 255));
 
-        if (_titleScreenButtonsPanel.IsVisible)
+        if (_levelSelectionScreenButtonsPanel.IsVisible)
         {
             // Begin the sprite batch to prepare for rendering.
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
@@ -72,51 +73,42 @@ public class TitleScene : Scene
         GumService.Default.Draw();
     }
 
-    private void CreateTitlePanel()
+    private void CreateLevelSelectionPanel()
     {
         // Create a container to hold all of our buttons
-        _titleScreenButtonsPanel = new Panel();
-        _titleScreenButtonsPanel.Dock(Gum.Wireframe.Dock.Fill);
-        _titleScreenButtonsPanel.AddToRoot();
+        _levelSelectionScreenButtonsPanel = new Panel();
+        _levelSelectionScreenButtonsPanel.Dock(Gum.Wireframe.Dock.Fill);
+        _levelSelectionScreenButtonsPanel.AddToRoot();
 
-        var startButton = new Button();
-        startButton.Anchor(Gum.Wireframe.Anchor.TopLeft);
-        startButton.Visual.XUnits = GeneralUnitType.Percentage;
-        startButton.Visual.YUnits = GeneralUnitType.Percentage;
-        startButton.Visual.WidthUnits = DimensionUnitType.PercentageOfParent;
-        startButton.Visual.HeightUnits = DimensionUnitType.PercentageOfParent;
-        startButton.Visual.X = 50 - _buttonWidthPercentage / 2f;
-        startButton.Visual.Y = 40;
-        startButton.Visual.Width = _buttonWidthPercentage;
-        startButton.Visual.Height = _buttonHeightPercentage;
-        startButton.Text = "Levels";
-        startButton.Click += HandleLevelsClicked;
-        _titleScreenButtonsPanel.AddChild(startButton);
+        var folders = Android.App.Application.Context.Assets.List("MazeSources");
+        var buttonHeight = _buttonHeightPercentage;
+        var buttonSpacing = (100 - 35 - folders.Length * buttonHeight) / folders.Length;
+        for (var x = 0; x < folders.Length; x++)
+        {
+            var button = new Button
+            {
+                Text = folders[x] + " cells",
+                Width = _buttonWidthPercentage,
+                Height = buttonHeight,
+                X = 50 - (_buttonWidthPercentage / 2),
+                Y = 35 + x * buttonHeight + x * buttonSpacing
+            };
+            button.Visual.WidthUnits = DimensionUnitType.PercentageOfParent;
+            button.Visual.HeightUnits = DimensionUnitType.PercentageOfParent;
+            button.Visual.XUnits = GeneralUnitType.Percentage;
+            button.Visual.YUnits = GeneralUnitType.Percentage;
 
-        var recordsButton = new Button();
-        recordsButton.Anchor(Gum.Wireframe.Anchor.TopLeft);
-        recordsButton.Visual.XUnits = GeneralUnitType.Percentage;
-        recordsButton.Visual.YUnits = GeneralUnitType.Percentage;
-        recordsButton.Visual.WidthUnits = DimensionUnitType.PercentageOfParent;
-        recordsButton.Visual.HeightUnits = DimensionUnitType.PercentageOfParent;
-        recordsButton.Visual.X = 50 - _buttonWidthPercentage/2f;
-        recordsButton.Visual.Y = 60;
-        recordsButton.Visual.Width = _buttonWidthPercentage;
-        recordsButton.Visual.Height = _buttonHeightPercentage;
-        recordsButton.Text = "Records";
-        recordsButton.Click += HandleRecordsClicked;
-        _titleScreenButtonsPanel.AddChild(recordsButton);
+            button.Click += HandleSizeClicked;
+            _levelSelectionScreenButtonsPanel.AddChild(button);
+        }
 
     }
 
-    private void HandleLevelsClicked(object sender, EventArgs e)
+    private void HandleSizeClicked(object sender, EventArgs e)
     {
-        RaiseSceneChanged(ScreenType.LevelSizeSelection);
-    }
-
-    private void HandleRecordsClicked(object sender, EventArgs e)
-    {
-        RaiseSceneChanged(ScreenType.Records);
+        var button = sender as Button;
+        var sizeText = button.Text.Split(' ')[0];
+        RaiseSceneChanged(ScreenType.LevelSelection, new() {{"levelSize", sizeText}});
     }
 
     private void InitializeUI()
@@ -125,8 +117,7 @@ public class TitleScene : Scene
         // a different screen:
         GumService.Default.Root.Children.Clear();
 
-        CreateTitlePanel();
+        CreateLevelSelectionPanel();
     }
-
 }
 

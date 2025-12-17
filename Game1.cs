@@ -8,7 +8,9 @@ using Microsoft.Xna.Framework.Input;
 using MonoGameGum;
 using Syncfusion.XForms.Android.Core;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using Exception = Java.Lang.Exception;
 
 
 namespace MazeGame
@@ -18,7 +20,9 @@ namespace MazeGame
         Title,
         Gameplay,
         Records,
-        LevelFinished
+        LevelFinished,
+        LevelSelection,
+        LevelSizeSelection
     }
 
     public class Game1 : Game
@@ -121,7 +125,7 @@ namespace MazeGame
             base.Draw(gameTime);
         }
 
-        public static void ChangeScene(ScreenType type)
+        public static void ChangeScene(ScreenType type, Dictionary<string, object>? args = null)
         {
             switch (type)
             {
@@ -129,16 +133,27 @@ namespace MazeGame
                     _nextScene = new TitleScene();
                     break;
                 case ScreenType.Gameplay:
+                    if(args is null || !args.TryGetValue("levelName", out var levelName))
+                        throw new Exception("missing level name");
                     var _screenBounds = new Rectangle(0, 0,
                         GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
                         GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
-                    _nextScene = new GameScene(_screenBounds);
+                    _nextScene = new GameScene(_screenBounds, levelName.ToString());
                     break;
                 case ScreenType.LevelFinished: 
                     _nextScene = new LevelFinishedScene(); 
                     break;
                 case ScreenType.Records:
                     _nextScene = new RecordScene();
+                    break;
+                case ScreenType.LevelSizeSelection:
+                    _nextScene = new LevelSizeSelectionScene();
+                    break;
+                case ScreenType.LevelSelection:
+                    if (args is null || !args.TryGetValue("levelSize", out var size))
+                        throw new Exception("missing level size");
+                    mazeSize = size.ToString();
+                    _nextScene = new LevelSelectionScene(mazeSize);
                     break;
             }
             if(_nextScene is not null)

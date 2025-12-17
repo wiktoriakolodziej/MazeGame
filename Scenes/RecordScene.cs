@@ -118,13 +118,13 @@ public class RecordScene : Scene
     private void HandleNextLevelClicked(object sender, EventArgs e)
     {
 
-        OnSceneChanged(ScreenType.Gameplay);
+        RaiseSceneChanged(ScreenType.Gameplay);
     }
 
     private void HandleBackToMenuClicked(object sender, EventArgs e)
     {
 
-        OnSceneChanged(ScreenType.Title);
+        RaiseSceneChanged(ScreenType.Title);
     }
 
     private void InitializeUI()

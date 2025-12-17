@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Syncfusion.XForms.Android.Core;
 using System;
+using System.Collections.Generic;
+using Java.Util;
 
 namespace MazeGame.Scenes;
 
@@ -24,7 +26,18 @@ public abstract class Scene : IDisposable
     protected SpriteBatch SpriteBatch { get; }
     protected GraphicsDevice GraphicsDevice { get; }
 
-    public Action<ScreenType> OnSceneChanged { get; set; }
+    public delegate void SceneChangedHandler(
+        ScreenType screen,
+        Dictionary<string, object>? data = null);
+
+    public event SceneChangedHandler? OnSceneChanged;
+
+    protected void RaiseSceneChanged(
+        ScreenType screen,
+        Dictionary<string, object>? data = null)
+    {
+        OnSceneChanged?.Invoke(screen, data);
+    }
 
     ~Scene() => Dispose(false);
     public virtual void Initialize() => LoadContent();
@@ -33,6 +46,10 @@ public abstract class Scene : IDisposable
     public virtual void Update(GameTime gameTime) { }
     public virtual void Draw(GameTime gameTime) { }
 
+    public void RaiseScreenChanged(ScreenType type, Dictionary<string, object>? args = null)
+    {
+        OnSceneChanged?.Invoke(type, args);
+    }
     public void Dispose()
     {
         Dispose(true);

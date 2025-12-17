@@ -7,7 +7,7 @@ using System;
 
 namespace MazeGame.Scenes;
 
-public class GameScene(Rectangle screen) : Scene
+public class GameScene(Rectangle screen, string levelName) : Scene
 {
     private readonly AccelerometerService _accelerometerService = new AccelerometerService();
     private readonly PhysicsService _physicsService = new PhysicsService();
@@ -16,11 +16,12 @@ public class GameScene(Rectangle screen) : Scene
     private MazeControl _mazeControl;
     private Texture2D _debugLine; // dbg
     private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+    private readonly string levelName = levelName;
 
     public override void Initialize()
     {
         base.Initialize();
-        var maze = Maze.Maze.CreateFromFile("maze.txt", Content);
+        var maze = Maze.Maze.CreateFromFile(levelName, Content);
         _mazeControl = new MazeControl(maze, _ball, SpriteBatch, _screenBounds);
         var ballStartPoint = _mazeControl.GetStartRectangle();
         _ball.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
@@ -44,7 +45,7 @@ public class GameScene(Rectangle screen) : Scene
             watch.Stop();
             Game1.timeScore = watch.ElapsedMilliseconds;
             Console.WriteLine(Game1.timeScore);
-            OnSceneChanged(ScreenType.LevelFinished);
+            RaiseSceneChanged(ScreenType.LevelFinished);
         }
     }
 
