@@ -101,7 +101,17 @@ public class LevelSizeSelectionScene : Scene
             button.Click += HandleSizeClicked;
             _levelSelectionScreenButtonsPanel.AddChild(button);
         }
-
+        var buttonBack = new Button()
+        {
+            Text = "<",
+            Width = 30,
+            Height = 5
+        };
+        buttonBack.Anchor(Gum.Wireframe.Anchor.BottomLeft);
+        buttonBack.X = 10;
+        buttonBack.Y = -10;
+        buttonBack.Click += HandleBackClicked;
+        _levelSelectionScreenButtonsPanel.AddChild(buttonBack);
     }
 
     private void HandleSizeClicked(object sender, EventArgs e)
@@ -109,6 +119,10 @@ public class LevelSizeSelectionScene : Scene
         var button = sender as Button;
         var sizeText = button.Text.Split(' ')[0];
         RaiseSceneChanged(ScreenType.LevelSelection, new() {{"levelSize", sizeText}});
+    }
+    private void HandleBackClicked(object sender, EventArgs e)
+    {
+        RaiseSceneChanged(ScreenType.Title);
     }
 
     private void InitializeUI()
