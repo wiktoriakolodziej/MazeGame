@@ -35,7 +35,6 @@ namespace MazeGame
         public static SpriteBatch _spriteBatch { get; private set; }
         public static new ContentManager Content { get; private set; }
         public static long timeScore = 0;
-        public static string mazeSize = "10x10";
         public static string sqlitePath = string.Empty;
         
         private static Scene _activeScene;
@@ -141,7 +140,9 @@ namespace MazeGame
                     _nextScene = new GameScene(_screenBounds, levelName.ToString());
                     break;
                 case ScreenType.LevelFinished: 
-                    _nextScene = new LevelFinishedScene(); 
+                    if(args is null || !args.TryGetValue("mazeSize", out var mazeSize))
+                        throw new Exception("missing maze size");
+                    _nextScene = new LevelFinishedScene(mazeSize.ToString()); 
                     break;
                 case ScreenType.Records:
                     _nextScene = new RecordScene();
@@ -152,8 +153,7 @@ namespace MazeGame
                 case ScreenType.LevelSelection:
                     if (args is null || !args.TryGetValue("levelSize", out var size))
                         throw new Exception("missing level size");
-                    mazeSize = size.ToString();
-                    _nextScene = new LevelSelectionScene(mazeSize);
+                    _nextScene = new LevelSelectionScene(size.ToString());
                     break;
             }
             if(_nextScene is not null)

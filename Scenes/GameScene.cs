@@ -45,7 +45,8 @@ public class GameScene(Rectangle screen, string levelName) : Scene
             watch.Stop();
             Game1.timeScore = watch.ElapsedMilliseconds;
             Console.WriteLine(Game1.timeScore);
-            RaiseSceneChanged(ScreenType.LevelFinished);
+            var size = levelName.Split("/")[1];
+            RaiseSceneChanged(ScreenType.LevelFinished, new () {{"mazeSize", size}});
         }
     }
 

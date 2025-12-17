@@ -4,14 +4,11 @@ using Microsoft.Data.Sqlite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameGum;
-using Syncfusion.XForms.Android.Core;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MazeGame.Scenes;
 
-public class LevelFinishedScene : Scene
+public class LevelFinishedScene(string mazeSize) : Scene
 {
     private const string CONGRATS_TEXT = "Congratulations!";
     private const string YOURTIME_TEXT = "Your time is";
@@ -27,6 +24,8 @@ public class LevelFinishedScene : Scene
     private Vector2 yourtimeOrigin;
     private Vector2 timePos;
     private Vector2 timeOrigin;
+
+    private readonly string mazeSize = mazeSize;
 
     private Panel panel;
     public override void Initialize()
@@ -45,7 +44,7 @@ public class LevelFinishedScene : Scene
         connection.Open();
         var command = connection.CreateCommand();
         command.CommandText = "INSERT INTO scores VALUES(NULL, $size, $time)";
-        command.Parameters.AddWithValue("$size", Game1.mazeSize);
+        command.Parameters.AddWithValue("$size", mazeSize);
         command.Parameters.AddWithValue("$time", Game1.timeScore / 1000.0f);
         command.ExecuteNonQuery();
 
@@ -119,8 +118,7 @@ public class LevelFinishedScene : Scene
 
     private void HandleNextLevelClicked(object sender, EventArgs e)
     {
-
-        RaiseSceneChanged(ScreenType.Gameplay);
+        RaiseSceneChanged(ScreenType.LevelSelection, new() {{ "levelSize", mazeSize}});
     }
 
     private void HandleBackToMenuClicked(object sender, EventArgs e)
