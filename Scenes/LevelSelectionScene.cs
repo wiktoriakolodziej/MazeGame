@@ -139,6 +139,7 @@ public class LevelSelectionScene(string size) : Scene
         buttonDown.Anchor(Gum.Wireframe.Anchor.BottomRight);
         buttonDown.X = -10;
         buttonDown.Y = -10;
+        buttonDown.IsEnabled = indexTo < buttons.Count;
         buttonDown.Click += HandleScrollClicked;
         _levelSelectionScreenButtonsPanel.AddChild(buttonDown);
 
@@ -151,6 +152,7 @@ public class LevelSelectionScene(string size) : Scene
         buttonUp.Anchor(Gum.Wireframe.Anchor.BottomRight);
         buttonUp.X = - 10;
         buttonUp.Y = -50;
+        buttonUp.IsEnabled = indexFrom > 0;
         buttonUp.Click += HandleScrollClicked;
         _levelSelectionScreenButtonsPanel.AddChild(buttonUp);
 

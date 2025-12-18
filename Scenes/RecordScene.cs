@@ -12,6 +12,10 @@ namespace MazeGame.Scenes;
 
 public class RecordScene : Scene
 {
+    private List<string> mazeSizes = new List<string>();
+    private int lastIndex = 0;
+    private int viewedIndex = 0;
+
     private const string HIGHSCORES_TEXT = "High scores";
     private string boardSize_text = "10x10 board";
     private string scores_text = "";
@@ -28,40 +32,17 @@ public class RecordScene : Scene
     private Vector2 scoresOrigin;
 
     private Panel panel;
+    private Button nextButton;
+    private Button prevButton;
     public override void Initialize()
     {
         base.Initialize();
-
-        var sb = new StringBuilder();
-        using var connection = new SqliteConnection($"Data Source={Game1.sqlitePath}");
-        connection.Open();
-        var command = connection.CreateCommand();
-        command.CommandText = "SELECT time FROM scores WHERE maze_size LIKE \"10x10\" ORDER BY time ASC"; //TODO zmienic to zeby wspierac rozne rozmiary planszy
-        using var reader = command.ExecuteReader();
-
-        while (reader.Read())
-        {
-            var score = reader.GetString(0);
-            var dot = score.IndexOf("."); // TODO sprobowac zrobic normalne zaokraglanie, problem z przecinkami/kropkami
-            if (dot >= 0 && score.Length > dot + 3)
-            {
-                score = score.Substring(0, dot + 3);
-            }
-
-            sb.AppendLine(score);
-        }
-        scores_text = sb.ToString();
-
-        highScoresOrigin = _robotoFont.MeasureString(HIGHSCORES_TEXT) * 0.5f;
-        highScoresPos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.5f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.1f);
-        boardSizeOrigin = _robotoFont.MeasureString(boardSize_text) * 0.5f;
-        boardSizePos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.5f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.2f);
-        scoresOrigin = _robotoFont.MeasureString(scores_text) * 0.5f;
-        scoresOrigin.Y = 0;
-        scoresPos = boardSizePos;
-        scoresPos.Y += _robotoFont.MeasureString(boardSize_text).Y * 2.0f;
+        mazeSizes = new List<string>(Android.App.Application.Context.Assets.List("MazeSources"));
+        lastIndex = mazeSizes.Count - 1;
+        viewedIndex = 0;
 
         InitializeUI();
+        InitializeRecords();
     }
     public override void LoadContent()
     {
@@ -86,6 +67,57 @@ public class RecordScene : Scene
         Game1._spriteBatch.End();
 
         GumService.Default.Draw();
+    }
+
+    private void InitializeRecords()
+    {
+        var sb = new StringBuilder();
+        using var connection = new SqliteConnection($"Data Source={Game1.sqlitePath}");
+        connection.Open();
+        var command = connection.CreateCommand();
+        command.CommandText = "SELECT time FROM scores WHERE maze_size LIKE $sizeString ORDER BY time ASC"; //TODO zmienic to zeby wspierac rozne rozmiary planszy
+        command.Parameters.AddWithValue("$sizeString", mazeSizes[viewedIndex]);
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            var score = reader.GetString(0);
+            var dot = score.IndexOf("."); // TODO sprobowac zrobic normalne zaokraglanie, problem z przecinkami/kropkami
+            if (dot >= 0 && score.Length > dot + 3)
+            {
+                score = score.Substring(0, dot + 3);
+            }
+
+            sb.AppendLine(score);
+        }
+        boardSize_text = mazeSizes[viewedIndex] + " board";
+        scores_text = sb.ToString();
+
+        highScoresOrigin = _robotoFont.MeasureString(HIGHSCORES_TEXT) * 0.5f;
+        highScoresPos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.5f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.1f);
+        boardSizeOrigin = _robotoFont.MeasureString(boardSize_text) * 0.5f;
+        boardSizePos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.5f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.2f);
+        scoresOrigin = _robotoFont.MeasureString(scores_text) * 0.5f;
+        scoresOrigin.Y = 0;
+        scoresPos = boardSizePos;
+        scoresPos.Y += _robotoFont.MeasureString(boardSize_text).Y * 2.0f;
+
+        if (viewedIndex < lastIndex)
+        {
+            nextButton.Text = mazeSizes[viewedIndex + 1] + " ->";
+        }
+        else
+        {
+            nextButton.Text = mazeSizes[0] + " ->";
+        }
+        if (viewedIndex > 0)
+        {
+            prevButton.Text = "<- " + mazeSizes[viewedIndex - 1];
+        }
+        else
+        {
+            prevButton.Text = "<- " + mazeSizes[lastIndex];
+        }
     }
 
     private void CreateLevelFinishedPanel()
@@ -113,12 +145,58 @@ public class RecordScene : Scene
         backToMenuButton.Click += HandleBackToMenuClicked;
         panel.AddChild(backToMenuButton);
 
+        nextButton = new Button();
+        nextButton.Anchor(Gum.Wireframe.Anchor.BottomRight);
+        nextButton.Visual.WidthUnits = Gum.DataTypes.DimensionUnitType.ScreenPixel;
+        nextButton.Visual.HeightUnits = Gum.DataTypes.DimensionUnitType.ScreenPixel;
+        nextButton.Visual.Width = buttonWidth;
+        nextButton.Visual.Height = buttonHeight;
+        nextButton.Visual.X = buttonWidth * -0.05f;
+        nextButton.Visual.Y = buttonHeight * -0.5f;
+        var nextVisual = (ButtonVisual)nextButton.Visual;
+        nextVisual.Background.Color = buttonColor;
+        nextButton.Click += HandleNextSizeClicked;
+        panel.AddChild(nextButton);
+
+        prevButton = new Button();
+        prevButton.Anchor(Gum.Wireframe.Anchor.BottomLeft);
+        prevButton.Visual.WidthUnits = Gum.DataTypes.DimensionUnitType.ScreenPixel;
+        prevButton.Visual.HeightUnits = Gum.DataTypes.DimensionUnitType.ScreenPixel;
+        prevButton.Visual.Width = buttonWidth;
+        prevButton.Visual.Height = buttonHeight;
+        prevButton.Visual.X = buttonWidth * 0.05f;
+        prevButton.Visual.Y = buttonHeight * -0.5f;
+        var prevVisual = (ButtonVisual)prevButton.Visual;
+        prevVisual.Background.Color = buttonColor;
+        prevButton.Click += HandlePrevSizeClicked;
+        panel.AddChild(prevButton);
+
     }
 
-    private void HandleNextLevelClicked(object sender, EventArgs e)
+    private void HandleNextSizeClicked(object sender, EventArgs e)
     {
+        if (viewedIndex < lastIndex)
+        {
+            viewedIndex++;
+        }
+        else
+        {
+            viewedIndex = 0;
+        }
+        InitializeRecords();
+    }
 
-        RaiseSceneChanged(ScreenType.Gameplay);
+    private void HandlePrevSizeClicked(object sender, EventArgs e)
+    {
+        if (viewedIndex > 0)
+        {
+            viewedIndex--;
+        }
+        else
+        {
+            viewedIndex = lastIndex;
+        }
+        InitializeRecords();
     }
 
     private void HandleBackToMenuClicked(object sender, EventArgs e)
