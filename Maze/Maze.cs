@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using MazeGame.Services;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
 using static Java.Interop.JniEnvironment;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace MazeGame.Maze
 {
@@ -13,7 +15,7 @@ namespace MazeGame.Maze
         Start,
         End
     }
-    public record MazeElement(CellType Type, Texture2D Texture);
+    public record MazeElement(CellType Type, Texture2D Texture, Color Color);
     public class Maze
     {
         public int Rows { get; }
@@ -46,12 +48,12 @@ namespace MazeGame.Maze
 
         public static Maze CreateFromFile(string path, ContentManager contentManager)
         {
-            var mazeTexture2D = contentManager.Load<Texture2D>("Images/maze_wall");
+            var mazeTexture2D = contentManager.Load<Texture2D>("Images/maze_path");
             var emptyTexture2D = contentManager.Load<Texture2D>("Images/maze_path");
-            var endTexture2D = contentManager.Load<Texture2D>("Images/maze_end");
+            var endTexture2D = contentManager.Load<Texture2D>("Images/maze_path");
 
-            var wall  = new MazeElement(CellType.Wall, mazeTexture2D);
-            var empty  = new MazeElement(CellType.Path, emptyTexture2D);
+            var wall  = new MazeElement(CellType.Wall, mazeTexture2D, ColorService.WallColor);
+            var empty  = new MazeElement(CellType.Path, emptyTexture2D, ColorService.PathColor);
 
             //var files = Android.App.Application.Context.Assets.List("MazeSources/size" + Game1.mazeSize + "/");
             //var rand = new Random();
@@ -69,8 +71,8 @@ namespace MazeGame.Maze
                     {
                         '#' => wall,
                         '.' => empty,
-                        'S' => new MazeElement(CellType.Start, emptyTexture2D),
-                        'E' => new MazeElement(CellType.End, endTexture2D),
+                        'S' => new MazeElement(CellType.Start, emptyTexture2D, ColorService.StartColor),
+                        'E' => new MazeElement(CellType.End, endTexture2D, ColorService.EndColor),
                         _ => throw new System.Exception("Invalid character in maze file.")
                     };
                 }

@@ -1,5 +1,6 @@
 ﻿using Gum.Forms.Controls;
 using Gum.Forms.DefaultVisuals;
+using MazeGame.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,8 +21,8 @@ public class RecordScene : Scene
     private string boardSize_text = "10x10 board";
     private string scores_text = "";
     private SpriteFont _robotoFont;
-    private Color backgroundColor = new Color(2, 62, 138, 255);
-    private Color textColor = new Color(173, 232, 244);
+    private Color backgroundColor = ColorService.MenuBgColor;
+    private Color textColor = ColorService.MenuTextColor;
     private Color buttonColor = new Color(6, 212, 153);
 
     private Vector2 highScoresPos;
@@ -60,9 +61,9 @@ public class RecordScene : Scene
 
         Game1._spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        Game1._spriteBatch.DrawString(_robotoFont, HIGHSCORES_TEXT, highScoresPos, textColor, 0.0f, highScoresOrigin, 2.0f, SpriteEffects.None, 0.0f);
-        Game1._spriteBatch.DrawString(_robotoFont, boardSize_text, boardSizePos, textColor, 0.0f, boardSizeOrigin, 1.5f, SpriteEffects.None, 0.0f);
-        Game1._spriteBatch.DrawString(_robotoFont, scores_text, scoresPos, textColor, 0.0f, scoresOrigin, 1.0f, SpriteEffects.None, 0.0f);
+        Game1._spriteBatch.DrawString(_robotoFont, HIGHSCORES_TEXT, highScoresPos, textColor, 0.0f, highScoresOrigin, 2.0f * ColorService.FontSizeMultiplier, SpriteEffects.None, 0.0f);
+        Game1._spriteBatch.DrawString(_robotoFont, boardSize_text, boardSizePos, textColor, 0.0f, boardSizeOrigin, 1.5f * ColorService.FontSizeMultiplier, SpriteEffects.None, 0.0f);
+        Game1._spriteBatch.DrawString(_robotoFont, scores_text, scoresPos, textColor, 0.0f, scoresOrigin, 1.0f * ColorService.FontSizeMultiplier, SpriteEffects.None, 0.0f);
 
         Game1._spriteBatch.End();
 
@@ -75,7 +76,7 @@ public class RecordScene : Scene
         using var connection = new SqliteConnection($"Data Source={Game1.sqlitePath}");
         connection.Open();
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT time FROM scores WHERE maze_size LIKE $sizeString ORDER BY time ASC"; //TODO zmienic to zeby wspierac rozne rozmiary planszy
+        command.CommandText = "SELECT time FROM scores WHERE maze_size LIKE $sizeString ORDER BY time ASC LIMIT 10";
         command.Parameters.AddWithValue("$sizeString", mazeSizes[viewedIndex]);
         using var reader = command.ExecuteReader();
 

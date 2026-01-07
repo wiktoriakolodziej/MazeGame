@@ -1,5 +1,6 @@
 ﻿using Gum.Forms;
 using MazeGame.Scenes;
+using MazeGame.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -22,7 +23,8 @@ namespace MazeGame
         Records,
         LevelFinished,
         LevelSelection,
-        LevelSizeSelection
+        LevelSizeSelection,
+        Options
     }
 
     public class Game1 : Game
@@ -58,6 +60,7 @@ namespace MazeGame
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.ApplyChanges();
+            ColorService.SetContrastingPallette();
         }
 
         protected override void Initialize()
@@ -154,6 +157,9 @@ namespace MazeGame
                     if (args is null || !args.TryGetValue("levelSize", out var size))
                         throw new Exception("missing level size");
                     _nextScene = new LevelSelectionScene(size.ToString());
+                    break;
+                case ScreenType.Options:
+                    _nextScene = new OptionsScene();
                     break;
             }
             if(_nextScene is not null)

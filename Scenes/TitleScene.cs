@@ -5,6 +5,7 @@ using MonoGameGum;
 using System;
 using Gum.Converters;
 using Gum.DataTypes;
+using MazeGame.Services;
 
 
 namespace MazeGame.Scenes;
@@ -48,7 +49,7 @@ public class TitleScene : Scene
 
     public override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(new Color(32, 40, 78, 255));
+        GraphicsDevice.Clear(ColorService.MenuBgColor);
 
         if (_titleScreenButtonsPanel.IsVisible)
         {
@@ -100,12 +101,26 @@ public class TitleScene : Scene
         recordsButton.Visual.WidthUnits = DimensionUnitType.PercentageOfParent;
         recordsButton.Visual.HeightUnits = DimensionUnitType.PercentageOfParent;
         recordsButton.Visual.X = 50 - _buttonWidthPercentage/2f;
-        recordsButton.Visual.Y = 60;
+        recordsButton.Visual.Y = 55;
         recordsButton.Visual.Width = _buttonWidthPercentage;
         recordsButton.Visual.Height = _buttonHeightPercentage;
         recordsButton.Text = "Records";
         recordsButton.Click += HandleRecordsClicked;
         _titleScreenButtonsPanel.AddChild(recordsButton);
+
+        var optionsButton = new Button();
+        optionsButton.Anchor(Gum.Wireframe.Anchor.TopLeft);
+        optionsButton.Visual.XUnits = GeneralUnitType.Percentage;
+        optionsButton.Visual.YUnits = GeneralUnitType.Percentage;
+        optionsButton.Visual.WidthUnits = DimensionUnitType.PercentageOfParent;
+        optionsButton.Visual.HeightUnits = DimensionUnitType.PercentageOfParent;
+        optionsButton.Visual.X = 50 - _buttonWidthPercentage / 2f;
+        optionsButton.Visual.Y = 70;
+        optionsButton.Visual.Width = _buttonWidthPercentage;
+        optionsButton.Visual.Height = _buttonHeightPercentage;
+        optionsButton.Text = "Options";
+        optionsButton.Click += HandleOptionsClicked;
+        _titleScreenButtonsPanel.AddChild(optionsButton);
 
     }
 
@@ -117,6 +132,11 @@ public class TitleScene : Scene
     private void HandleRecordsClicked(object sender, EventArgs e)
     {
         RaiseSceneChanged(ScreenType.Records);
+    }
+
+    private void HandleOptionsClicked(object sender, EventArgs e)
+    {
+        RaiseSceneChanged(ScreenType.Options);
     }
 
     private void InitializeUI()

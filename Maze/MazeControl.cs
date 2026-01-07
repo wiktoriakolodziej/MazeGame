@@ -79,13 +79,13 @@ namespace MazeGame.Maze
                 for (var y = 0; y < _maze.Columns; y++)
                 {
                     var source = new Rectangle(y * _cellWidth, x * _cellHeight, _cellWidth, _cellHeight);
-                    Draw(_maze.Grid[x,y].Texture, new Vector2(y * _cellWidth, x * _cellHeight));
+                    Draw(_maze.Grid[x,y].Texture, new Vector2(y * _cellWidth, x * _cellHeight), _maze.Grid[x,y].Color);
                 }
             }
         }
-        private void Draw(Texture2D texture, Vector2 position)
+        private void Draw(Texture2D texture, Vector2 position, Color color)
         {
-            spriteBatch.Draw(texture, position, null, Color.White, 0.0f, Vector2.Zero, _cellScale, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(texture, position, null, color, 0.0f, Vector2.Zero, _cellScale, SpriteEffects.None, 0.0f);
         }
 
         public Rectangle GetStartRectangle()

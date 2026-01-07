@@ -1,5 +1,6 @@
 ﻿using Gum.Forms.Controls;
 using Gum.Forms.DefaultVisuals;
+using MazeGame.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,8 +15,8 @@ public class LevelFinishedScene(string mazeSize) : Scene
     private const string YOURTIME_TEXT = "Your time is";
     private string time_text = "";
     private SpriteFont _robotoFont;
-    private Color backgroundColor = new Color(2, 62, 138, 255);
-    private Color textColor = new Color(173, 232, 244);
+    private Color backgroundColor = ColorService.MenuBgColor;
+    private Color textColor = ColorService.MenuTextColor;
     private Color buttonColor = new Color(6, 212, 153);
 
     private Vector2 congratsPos;
@@ -66,9 +67,9 @@ public class LevelFinishedScene(string mazeSize) : Scene
 
         Game1._spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        Game1._spriteBatch.DrawString(_robotoFont, CONGRATS_TEXT, congratsPos, textColor, 0.0f, congratsOrigin, 2.0f, SpriteEffects.None, 0.0f);
-        Game1._spriteBatch.DrawString(_robotoFont, YOURTIME_TEXT, yourtimePos, textColor, 0.0f, yourtimeOrigin, 1.0f, SpriteEffects.None, 0.0f);
-        Game1._spriteBatch.DrawString(_robotoFont, time_text, timePos, textColor, 0.0f, timeOrigin, 1.5f, SpriteEffects.None, 0.0f);
+        Game1._spriteBatch.DrawString(_robotoFont, CONGRATS_TEXT, congratsPos, textColor, 0.0f, congratsOrigin, 2.0f * ColorService.FontSizeMultiplier, SpriteEffects.None, 0.0f);
+        Game1._spriteBatch.DrawString(_robotoFont, YOURTIME_TEXT, yourtimePos, textColor, 0.0f, yourtimeOrigin, 1.0f * ColorService.FontSizeMultiplier, SpriteEffects.None, 0.0f);
+        Game1._spriteBatch.DrawString(_robotoFont, time_text, timePos, textColor, 0.0f, timeOrigin, 1.5f * ColorService.FontSizeMultiplier, SpriteEffects.None, 0.0f);
 
         Game1._spriteBatch.End();
 

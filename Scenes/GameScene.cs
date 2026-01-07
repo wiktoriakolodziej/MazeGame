@@ -26,7 +26,7 @@ public class GameScene(Rectangle screen, string levelName) : Scene
         var ballStartPoint = _mazeControl.GetStartRectangle();
         _ball.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
         _ball.Scale = new Vector2((float)ballStartPoint.Width / (float)_ball.Texture.Width, (float)ballStartPoint.Height / (float)_ball.Texture.Height);
-        _ball.TexColor = Color.Aqua;
+        _ball.TexColor = ColorService.BallColor;
     }
 
     public override void LoadContent()

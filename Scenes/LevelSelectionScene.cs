@@ -1,6 +1,7 @@
 ﻿using Gum.Converters;
 using Gum.DataTypes;
 using Gum.Forms.Controls;
+using MazeGame.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameGum;
@@ -52,7 +53,7 @@ public class LevelSelectionScene(string size) : Scene
 
     public override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(new Color(32, 40, 78, 255));
+        GraphicsDevice.Clear(ColorService.MenuBgColor);
 
         if (_levelSelectionScreenButtonsPanel.IsVisible)
         {
