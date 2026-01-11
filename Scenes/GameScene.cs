@@ -23,7 +23,7 @@ public class GameScene(Rectangle screen, string levelName) : Scene
         base.Initialize();
         var maze = Maze.Maze.CreateFromFile(levelName, Content);
         _mazeControl = new MazeControl(maze, _ball, SpriteBatch, _screenBounds);
-        var ballStartPoint = _mazeControl.GetStartRectangle();
+        var ballStartPoint = _mazeControl.startPosition;
         _ball.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
         _ball.Scale = new Vector2((float)ballStartPoint.Width / (float)_ball.Texture.Width, (float)ballStartPoint.Height / (float)_ball.Texture.Height);
         _ball.TexColor = ColorService.BallColor;

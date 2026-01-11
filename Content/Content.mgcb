@@ -82,6 +82,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/maze_path.png
 
+#begin images/maze_trapdoor.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:images/maze_trapdoor.png;Images/maze_trapdoor
+
 #begin Images/maze_wall.png
 /importer:TextureImporter
 /processor:TextureProcessor

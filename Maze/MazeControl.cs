@@ -8,6 +8,7 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace MazeGame.Maze
 {
+    public record CollidingCell(bool IsTrap, Rectangle Position);
     public class MazeControl(Maze maze, Sprite movingObject, SpriteBatch spriteBatch, Rectangle screen)
     {
         private readonly Maze _maze = maze;
@@ -18,19 +19,19 @@ namespace MazeGame.Maze
         private readonly int _cellWidth = screen.Width / maze.Columns;
         private readonly int _cellHeight = screen.Height / maze.Rows;
         private Vector2 _cellScale => new Vector2((float)_cellWidth/_maze.Grid[0, 0].Texture.Width, (float)_cellHeight/ _maze.Grid[0, 0].Texture.Height);
+        public Rectangle startPosition => CalculateStartRectangle();
 
         public bool ResolveCollisions()
         {
             if (CheckEnd())
             {
-                var ballStartPoint = GetStartRectangle();
-                _movingObject.Position = new Vector2(ballStartPoint.X, ballStartPoint.Y);
+                _movingObject.Position = new Vector2(startPosition.X, startPosition.Y);
                 _movingObject.Velocity = Vector2.Zero;
                 return true;
             }
             var (mObjectXIndex, mObjectYIndex) = GetCellIndices(_movingObject.Position);
             var adjacentCells = GetAdjacentCells(mObjectXIndex, mObjectYIndex);
-            _physicsService.OutsideBounce(_movingObject, adjacentCells);
+            _physicsService.OutsideBounce(_movingObject, adjacentCells, startPosition);
             return false;
         }
 
@@ -58,15 +59,15 @@ namespace MazeGame.Maze
             return endRect.Intersects(ballBounds);
         }
 
-        private List<Rectangle> GetAdjacentCells(int xIndex, int yIndex, int radius = 1)
+        private List<CollidingCell> GetAdjacentCells(int xIndex, int yIndex, int radius = 1)
         {
-            var adjacentCells = new List<Rectangle>();
+            var adjacentCells = new List<CollidingCell>();
             for (var x = xIndex - radius; x <= xIndex + radius; x++)
             {
                 for (var y = yIndex - radius; y <= yIndex + radius; y++)
                 {
-                    if (x >= 0 && x < _maze.Rows && y >= 0 && y < _maze.Columns && _maze.Grid[x,y].Type == CellType.Wall)
-                        adjacentCells.Add(new Rectangle(y * _cellWidth, x * _cellHeight, _cellWidth, _cellHeight));
+                    if (x >= 0 && x < _maze.Rows && y >= 0 && y < _maze.Columns && (_maze.Grid[x,y].Type == CellType.Wall || _maze.Grid[x, y].Type == CellType.Trap))
+                        adjacentCells.Add(new CollidingCell(_maze.Grid[x, y].Type == CellType.Trap, new Rectangle(y * _cellWidth, x * _cellHeight, _cellWidth, _cellHeight)));
                 }
             }
             return adjacentCells;
@@ -88,7 +89,7 @@ namespace MazeGame.Maze
             spriteBatch.Draw(texture, position, null, color, 0.0f, Vector2.Zero, _cellScale, SpriteEffects.None, 0.0f);
         }
 
-        public Rectangle GetStartRectangle()
+        public Rectangle CalculateStartRectangle()
         {
             var startPoint = _maze.StartPosition;
             var scale = Math.Min(_cellHeight, _cellWidth) * 0.7f;

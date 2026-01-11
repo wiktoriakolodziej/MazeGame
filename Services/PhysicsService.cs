@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Graphics;
+using MazeGame.Maze;
+using Syncfusion.XForms.Android.EffectsView;
 
 namespace MazeGame.Services
 {
@@ -71,7 +73,7 @@ namespace MazeGame.Services
 
         }
 
-        public void OutsideBounce(Sprite movingObject, List<Rectangle> obstaclesBounds)
+        public void OutsideBounce(Sprite movingObject, List<CollidingCell> obstaclesBounds, Rectangle startPosition)
         {
             var ballBounds = new Rectangle(
                 (int)movingObject.Position.X,
@@ -81,7 +83,7 @@ namespace MazeGame.Services
             );
             //Console.WriteLine(ballBounds);
             //foreach ( var obstacle in obstaclesBounds ) Console.WriteLine(obstacle);
-            var obstacles = obstaclesBounds.Where(r => r.Intersects(ballBounds));
+            var obstacles = obstaclesBounds.Where(r => r.Position.Intersects(ballBounds));
             //Console.WriteLine(obstacles.Count());
             if (!obstacles.Any())
             {
@@ -90,11 +92,14 @@ namespace MazeGame.Services
                 return;
             }
 
-            foreach (var rect in obstacles)
-                OutsideBounce(movingObject, rect);
+            foreach (var obstacle in obstacles)
+            {
+                if (OutsideBounce(movingObject, obstacle.Position, obstacle.IsTrap, startPosition))
+                    break;
+            }
         }
 
-        private void OutsideBounce(Sprite movingObject, Rectangle obstacleBounds)
+        private bool OutsideBounce(Sprite movingObject, Rectangle obstacleBounds, bool isTrap, Rectangle startPosition)
         {
 
             // Calculate the new position of the ball based on the velocity.
@@ -112,6 +117,12 @@ namespace MazeGame.Services
             float overlap = ballRadius - n_magnitude;
             if (overlap > 0)
             {
+                if (isTrap)
+                {
+                    movingObject.Velocity = Vector2.Zero;
+                    movingObject.Position = new Vector2(startPosition.X, startPosition.Y);
+                    return true;
+                }
                 Vector2 n_normal = (-1) * Vector2.Normalize(ray_n);
                 Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap + " ray_n " + ray_n);
                 if (ray_n == Vector2.Zero)
@@ -132,6 +143,7 @@ namespace MazeGame.Services
             movingObject.Position = newPosition;
             // Apply friction to the ball's velocity.
             movingObject.Velocity *= 0.99f;
+            return false;
         }
     }
 }

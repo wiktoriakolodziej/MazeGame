@@ -13,7 +13,8 @@ namespace MazeGame.Maze
         Wall,
         Path,
         Start,
-        End
+        End,
+        Trap
     }
     public record MazeElement(CellType Type, Texture2D Texture, Color Color);
     public class Maze
@@ -51,6 +52,7 @@ namespace MazeGame.Maze
             var mazeTexture2D = contentManager.Load<Texture2D>("Images/maze_path");
             var emptyTexture2D = contentManager.Load<Texture2D>("Images/maze_path");
             var endTexture2D = contentManager.Load<Texture2D>("Images/maze_path");
+            var trapdoorTexture2D = contentManager.Load<Texture2D>("Images/maze_trapdoor");
 
             var wall  = new MazeElement(CellType.Wall, mazeTexture2D, ColorService.WallColor);
             var empty  = new MazeElement(CellType.Path, emptyTexture2D, ColorService.PathColor);
@@ -73,6 +75,7 @@ namespace MazeGame.Maze
                         '.' => empty,
                         'S' => new MazeElement(CellType.Start, emptyTexture2D, ColorService.StartColor),
                         'E' => new MazeElement(CellType.End, endTexture2D, ColorService.EndColor),
+                        'X' => new MazeElement(CellType.Trap, trapdoorTexture2D, ColorService.TrapColor),
                         _ => throw new System.Exception("Invalid character in maze file.")
                     };
                 }

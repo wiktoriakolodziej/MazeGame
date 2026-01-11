@@ -11,6 +11,7 @@ public static class ColorService
     public static Color PathColor = Color.White;
     public static Color StartColor = Color.White;
     public static Color EndColor = Color.Gold;
+    public static Color TrapColor = Color.Red;
     public static Color BallColor = Color.Cyan;
     public static Color MenuBgColor = Color.Black;
     public static Color MenuTextColor = Color.White;
@@ -23,6 +24,7 @@ public static class ColorService
         PathColor = Color.White;
         StartColor = Color.White;
         EndColor = new Color(0, 133, 122);
+        TrapColor = new Color(231, 29, 54);
         BallColor = new Color(1, 22, 39);
         MenuBgColor = new Color(1, 22, 39);
         MenuTextColor = Color.White;
@@ -35,6 +37,7 @@ public static class ColorService
         PathColor = new Color(150, 190, 214);
         StartColor = new Color(150, 190, 214);
         EndColor = new Color(128, 255, 219);
+        TrapColor = new Color(116, 0, 184);
         BallColor = new Color(116, 0, 184);
         MenuBgColor = new Color(52, 0, 82);
         MenuTextColor = new Color(129, 219, 233);
@@ -47,6 +50,7 @@ public static class ColorService
         PathColor = new Color(245, 187, 0);
         StartColor = new Color(245, 187, 0);
         EndColor = new Color(142, 166, 4);
+        TrapColor = new Color(191, 49, 0);
         BallColor = new Color(191, 49, 0);
         MenuBgColor = new Color(87, 22, 0);
         MenuTextColor = new Color(245, 187, 0);
