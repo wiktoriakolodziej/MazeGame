@@ -1,4 +1,5 @@
-﻿using Gum.Forms;
+﻿using Android.Content;
+using Gum.Forms;
 using MazeGame.Scenes;
 using MazeGame.Services;
 using Microsoft.Data.Sqlite;
@@ -42,7 +43,9 @@ namespace MazeGame
         private static Scene _activeScene;
         private static Scene _nextScene;
 
-        public Game1()
+        private static ISharedPreferences _sharedPreferences;
+
+        public Game1(ISharedPreferences sharedPreferences)
         {
             if (s_instance != null)
             {
@@ -51,6 +54,7 @@ namespace MazeGame
 
             // Store reference to engine for global member access.
             s_instance = this;
+            _sharedPreferences = sharedPreferences;
 
             _graphics = new GraphicsDeviceManager(this);
             Content = base.Content;
@@ -60,7 +64,23 @@ namespace MazeGame
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.ApplyChanges();
-            ColorService.SetContrastingPallette();
+            var pallette = _sharedPreferences.GetString("colors", "contrast");
+            switch (pallette)
+            {
+                case "contrast":
+                    ColorService.SetContrastingPallette();
+                    break;
+                case "bluepurple":
+                    ColorService.SetBluePurplePallette();
+                    break;
+                case "orange":
+                    ColorService.SetOrangePallette();
+                    break;
+                default:
+                    ColorService.SetContrastingPallette();
+                    break;
+            }
+            ColorService.FontSizeMultiplier = _sharedPreferences.GetFloat("fontsize", 1.0f);
         }
 
         protected override void Initialize()
@@ -159,7 +179,7 @@ namespace MazeGame
                     _nextScene = new LevelSelectionScene(size.ToString());
                     break;
                 case ScreenType.Options:
-                    _nextScene = new OptionsScene();
+                    _nextScene = new OptionsScene(_sharedPreferences);
                     break;
             }
             if(_nextScene is not null)

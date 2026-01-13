@@ -24,7 +24,7 @@ namespace MazeGame
         {
             base.OnCreate(bundle);
 
-            _game = new Game1();
+            _game = new Game1(GetPreferences(Android.Content.FileCreationMode.Private));
             _view = _game.Services.GetService(typeof(View)) as View;
 
             SetContentView(_view);

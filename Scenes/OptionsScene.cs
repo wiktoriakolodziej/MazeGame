@@ -1,15 +1,16 @@
-﻿using Gum.Forms.Controls;
+﻿using Android.Content;
+using Gum.Converters;
+using Gum.DataTypes;
+using Gum.Forms.Controls;
+using MazeGame.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameGum;
 using System;
-using Gum.Converters;
-using Gum.DataTypes;
-using MazeGame.Services;
 
 namespace MazeGame.Scenes;
 
-public class OptionsScene : Scene
+public class OptionsScene(ISharedPreferences sharedPreferences) : Scene
 {
     private const string TITLE = "Options";
     private const string CHOOSE_COLORS = "Choose a color pallette";
@@ -28,6 +29,8 @@ public class OptionsScene : Scene
 
     private int _buttonWidthPercentage = 40;
     private int _buttonHeightPercentage = 10;
+
+    private ISharedPreferences _sharedPreferences = sharedPreferences;
 
     public override void Initialize()
     {
@@ -172,26 +175,41 @@ public class OptionsScene : Scene
     private void HandleHighContrastClicked(object sender, EventArgs e)
     {
         ColorService.SetContrastingPallette();
+        var editor = _sharedPreferences.Edit();
+        editor.PutString("colors", "contrast");
+        editor.Apply();
     }
 
     private void HandleBluePurpleClicked(object sender, EventArgs e)
     {
         ColorService.SetBluePurplePallette();
+        var editor = _sharedPreferences.Edit();
+        editor.PutString("colors", "bluepurple");
+        editor.Apply();
     }
 
     private void HandleOrangeClicked(object sender, EventArgs e)
     {
         ColorService.SetOrangePallette();
+        var editor = _sharedPreferences.Edit();
+        editor.PutString("colors", "orange");
+        editor.Apply();
     }
 
     private void HandleNormalFontClicked(object sender, EventArgs e)
     {
         ColorService.FontSizeMultiplier = 1.0f;
+        var editor = _sharedPreferences.Edit();
+        editor.PutFloat("fontsize", 1.0f);
+        editor.Apply();
     }
 
     private void HandleLargeFontClicked(object sender, EventArgs e)
     {
         ColorService.FontSizeMultiplier = 1.5f;
+        var editor = _sharedPreferences.Edit();
+        editor.PutFloat("fontsize", 1.5f);
+        editor.Apply();
     }
 
     private void HandleBackClicked(object sender, EventArgs e)
