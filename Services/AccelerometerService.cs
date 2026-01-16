@@ -12,7 +12,7 @@ namespace MazeGame.Services
         private readonly float _sensitivity;
         public Vector2 accReading; // dbg
 
-        public AccelerometerService(float sensitivity = 0.1f)
+        public AccelerometerService(float sensitivity = 0.15f)
         {
             accReading = Vector2.Zero; // dbg
             _sensitivity = sensitivity;

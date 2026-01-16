@@ -67,7 +67,7 @@ namespace MazeGame.Services
             }
 
             // Reflect the velocity about the normal.
-            movingObject.Velocity = Vector2.Reflect(movingObject.Velocity, normal) * 0.99f;
+            movingObject.Velocity = Vector2.Reflect(movingObject.Velocity, normal) * 0.98f;
             // Set the new position of the ball.
             movingObject.Position = newPosition;
 
@@ -88,7 +88,7 @@ namespace MazeGame.Services
             if (!obstacles.Any())
             {
                 movingObject.Position += movingObject.Velocity;
-                movingObject.Velocity *= 0.99f;
+                movingObject.Velocity *= 0.98f;
                 return;
             }
 
@@ -142,7 +142,7 @@ namespace MazeGame.Services
             // Set the new position of the ball.
             movingObject.Position = newPosition;
             // Apply friction to the ball's velocity.
-            movingObject.Velocity *= 0.99f;
+            movingObject.Velocity *= 0.98f;
             return false;
         }
     }
