@@ -16,9 +16,9 @@ namespace MazeGame.Maze
         private readonly Sprite _movingObject = movingObject;
         private readonly SpriteBatch _spriteBatch = spriteBatch;
         private readonly Rectangle _screen = screen;
-        private readonly int _cellWidth = screen.Width / maze.Columns;
-        private readonly int _cellHeight = screen.Height / maze.Rows;
-        private Vector2 _cellScale => new Vector2((float)_cellWidth/_maze.Grid[0, 0].Texture.Width, (float)_cellHeight/ _maze.Grid[0, 0].Texture.Height);
+        private readonly int _cellDim = screen.Width / maze.Columns;
+        //private readonly int _topOffset = (screen.Height - screen.Width) / 2;
+        private Vector2 _cellScale => new Vector2((float)_cellDim/_maze.Grid[0, 0].Texture.Width, (float)_cellDim/ _maze.Grid[0, 0].Texture.Height);
         public Rectangle startPosition => CalculateStartRectangle();
 
         public bool ResolveCollisions()
@@ -37,10 +37,8 @@ namespace MazeGame.Maze
 
         private (int, int) GetCellIndices(Vector2 position)
         {
-            var screenWidth = _screen.Width / _maze.Columns;
-            var cellHeight = _screen.Height / _maze.Rows;
-            var yIndex = (int)(position.X / screenWidth);
-            var xIndex = (int)(position.Y / cellHeight);
+            var yIndex = (int)(position.X / _cellDim);
+            var xIndex = (int)(((position.Y - _screen.Y) / _cellDim));
             return (xIndex, yIndex);
         }
         private bool CheckEnd()
@@ -49,7 +47,7 @@ namespace MazeGame.Maze
             if (!endPoint.HasValue)
                 return false;
             var (endX, endY) = endPoint.Value;
-            var endRect = new Rectangle(endY * _cellWidth, endX * _cellHeight, _cellWidth, _cellHeight);
+            var endRect = new Rectangle(endY * _cellDim, endX * _cellDim + _screen.Y, _cellDim, _cellDim);
             var ballBounds = new Rectangle(
                 (int)movingObject.Position.X,
                 (int)movingObject.Position.Y,
@@ -67,7 +65,7 @@ namespace MazeGame.Maze
                 for (var y = yIndex - radius; y <= yIndex + radius; y++)
                 {
                     if (x >= 0 && x < _maze.Rows && y >= 0 && y < _maze.Columns && (_maze.Grid[x,y].Type == CellType.Wall || _maze.Grid[x, y].Type == CellType.Trap))
-                        adjacentCells.Add(new CollidingCell(_maze.Grid[x, y].Type == CellType.Trap, new Rectangle(y * _cellWidth, x * _cellHeight, _cellWidth, _cellHeight)));
+                        adjacentCells.Add(new CollidingCell(_maze.Grid[x, y].Type == CellType.Trap, new Rectangle(y * _cellDim, x * _cellDim + _screen.Y, _cellDim, _cellDim)));
                 }
             }
             return adjacentCells;
@@ -79,8 +77,8 @@ namespace MazeGame.Maze
             {
                 for (var y = 0; y < _maze.Columns; y++)
                 {
-                    var source = new Rectangle(y * _cellWidth, x * _cellHeight, _cellWidth, _cellHeight);
-                    Draw(_maze.Grid[x,y].Texture, new Vector2(y * _cellWidth, x * _cellHeight), _maze.Grid[x,y].Color);
+                    var source = new Rectangle(y * _cellDim, x * _cellDim, _cellDim, _cellDim);
+                    Draw(_maze.Grid[x,y].Texture, new Vector2(y * _cellDim, x * _cellDim + _screen.Y), _maze.Grid[x,y].Color);
                 }
             }
         }
@@ -92,14 +90,14 @@ namespace MazeGame.Maze
         public Rectangle CalculateStartRectangle()
         {
             var startPoint = _maze.StartPosition;
-            var scale = Math.Min(_cellHeight, _cellWidth) * 0.7f;
+            var scale = _cellDim * 0.7f;
 
             if (!startPoint.HasValue)
                 return new Rectangle(0, 0, (int)scale, (int)scale);
             
             var (x, y) = startPoint.Value;
             // Wspolrzedne w pozostalych funkcjach wydaja sie ok, a tu trzeba je zamienic
-            return new Rectangle(y * _cellWidth + 3, x * _cellHeight + 3, (int)scale, (int)scale);
+            return new Rectangle(y * _cellDim + 3, x * _cellDim + _screen.Y + 3, (int)scale, (int)scale);
         }
     }
 }

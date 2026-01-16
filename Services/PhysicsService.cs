@@ -45,7 +45,7 @@ namespace MazeGame.Services
             {
                 // Closest to the left edge.
                 normal = Vector2.UnitX;
-                newPosition.X = 0;
+                newPosition.X = obstacleBounds.Left;
             }
             else if (minDistance == distanceRight)
             {
@@ -57,7 +57,7 @@ namespace MazeGame.Services
             {
                 // Closest to the top edge.
                 normal = Vector2.UnitY;
-                newPosition.Y = 0;
+                newPosition.Y = obstacleBounds.Top;
             }
             else
             {
@@ -124,7 +124,7 @@ namespace MazeGame.Services
                     return true;
                 }
                 Vector2 n_normal = (-1) * Vector2.Normalize(ray_n);
-                Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap + " ray_n " + ray_n);
+                //Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap + " ray_n " + ray_n);
                 if (ray_n == Vector2.Zero)
                 {
                     //Console.WriteLine("first");

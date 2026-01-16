@@ -12,7 +12,7 @@ public class GameScene(Rectangle screen, string levelName) : Scene
     private readonly AccelerometerService _accelerometerService = new AccelerometerService();
     private readonly PhysicsService _physicsService = new PhysicsService();
     private Sprite _ball;
-    private Rectangle _screenBounds = screen;
+    private Rectangle _screenBounds = new Rectangle(0, (int)((screen.Height - screen.Width) / 2), screen.Width, screen.Width); // Telefon na stałe ustawiony w pionie (szerokość < wysokość)
     private MazeControl _mazeControl;
     private Texture2D _debugLine; // dbg
     private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
@@ -52,7 +52,7 @@ public class GameScene(Rectangle screen, string levelName) : Scene
 
     public override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.AliceBlue);
+        GraphicsDevice.Clear(ColorService.MenuBgColor);
         SpriteBatch.Begin();
 
         _mazeControl.DrawMaze();
