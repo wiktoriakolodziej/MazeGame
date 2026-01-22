@@ -11,7 +11,9 @@ using MonoGameGum;
 using Syncfusion.XForms.Android.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using MazeGame.Graphics;
 using Exception = Java.Lang.Exception;
 
 
@@ -25,7 +27,8 @@ namespace MazeGame
         LevelFinished,
         LevelSelection,
         LevelSizeSelection,
-        Options
+        Options,
+        Pause
     }
 
     public class Game1 : Game
@@ -160,7 +163,12 @@ namespace MazeGame
                     var _screenBounds = new Rectangle(0, 0,
                         GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
                         GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
-                    _nextScene = new GameScene(_screenBounds, levelName.ToString());
+
+                    if (args.TryGetValue("ball", out var ball)
+                        && args.TryGetValue("watch", out var watch))
+                        _nextScene = new GameScene(_screenBounds, levelName.ToString(), (Sprite)ball, (Stopwatch)watch);
+                    else
+                        _nextScene = new GameScene(_screenBounds, levelName.ToString());
                     break;
                 case ScreenType.LevelFinished: 
                     if(args is null || !args.TryGetValue("mazeSize", out var mazeSize))
@@ -180,6 +188,13 @@ namespace MazeGame
                     break;
                 case ScreenType.Options:
                     _nextScene = new OptionsScene(_sharedPreferences);
+                    break;
+                case ScreenType.Pause:
+                    if (args is null || !args.TryGetValue("levelName", out levelName)
+                        || !args.TryGetValue("ball", out ball)
+                        || !args.TryGetValue("watch", out watch))
+                        throw new Exception("missing params");
+                    _nextScene = new PauseScene((Sprite)ball, levelName.ToString(), (Stopwatch)watch);
                     break;
             }
             if(_nextScene is not null)

@@ -1,13 +1,14 @@
-﻿using Android.Telecom;
+﻿using System;
+using Android.Telecom;
 using MazeGame.Graphics;
 using Microsoft.Xna.Framework;
 using MonoGame.Framework.Devices.Sensors;
 
 namespace MazeGame.Services
 {
-    public class AccelerometerService
+    public class AccelerometerService : IDisposable
     {
-        private readonly Accelerometer _accelSensor;
+        private Accelerometer _accelSensor;
         private Sprite? _movingObject;
         private readonly float _sensitivity;
         public Vector2 accReading; // dbg
@@ -32,6 +33,12 @@ namespace MazeGame.Services
             accReading.X = -e.SensorReading.Acceleration.X; // dbg
             accReading.Y = e.SensorReading.Acceleration.Y; // dbg
             _movingObject.Velocity += _sensitivity * new Vector2(-e.SensorReading.Acceleration.X, e.SensorReading.Acceleration.Y);
+        }
+
+        public void Dispose()
+        {
+            _accelSensor.Dispose();
+            _accelSensor = null;
         }
     }
 }

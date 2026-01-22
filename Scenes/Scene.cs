@@ -50,7 +50,7 @@ public abstract class Scene : IDisposable
     {
         OnSceneChanged?.Invoke(type, args);
     }
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
