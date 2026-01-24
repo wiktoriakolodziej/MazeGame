@@ -19,14 +19,19 @@ namespace MazeGame.Scenes
         private readonly string _levelName = levelName;
         private readonly Stopwatch _watch = watch;
         private SpriteFont _font;
+        private string _timeText;
         private Vector2 _timeTextPos;
+        private Vector2 _timeTextOrig;
         private Panel _pausePanel;
 
         public override void Initialize()
         {
             base.Initialize();
             GumService.Default.Root.Children.Clear();
-            _timeTextPos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.1f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.2f);
+            _timeText = $"Current time: {watch.ElapsedMilliseconds / 1000}s";
+            var size = _font.MeasureString(_timeText);
+            _timeTextOrig = size * 0.5f;
+            _timeTextPos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.5f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.2f);
 
 
             CreatePausePanel();
@@ -35,7 +40,7 @@ namespace MazeGame.Scenes
         {
             GraphicsDevice.Clear(ColorService.MenuBgColor);
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            SpriteBatch.DrawString(_font, $"Current time: {watch.ElapsedMilliseconds / 1000}s", _timeTextPos, ColorService.MenuTextColor);
+            SpriteBatch.DrawString(_font, _timeText, _timeTextPos, ColorService.MenuTextColor, 0.0f, _timeTextOrig, 1.0f * ColorService.FontSizeMultiplier, SpriteEffects.None, 1.0f);
             SpriteBatch.End();
             GumService.Default.Draw();
         }
