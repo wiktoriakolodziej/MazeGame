@@ -75,18 +75,13 @@ public class RecordScene : Scene
         using var connection = new SqliteConnection($"Data Source={Game1.sqlitePath}");
         connection.Open();
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT time FROM scores WHERE maze_size LIKE $sizeString ORDER BY time ASC LIMIT 10";
+        command.CommandText = "SELECT ROUND(time,3) FROM scores WHERE maze_size LIKE $sizeString ORDER BY time ASC LIMIT 10";
         command.Parameters.AddWithValue("$sizeString", mazeSizes[viewedIndex]);
         using var reader = command.ExecuteReader();
 
         while (reader.Read())
         {
-            var score = reader.GetString(0);
-            var dot = score.IndexOf("."); // TODO sprobowac zrobic normalne zaokraglanie, problem z przecinkami/kropkami
-            if (dot >= 0 && score.Length > dot + 3)
-            {
-                score = score.Substring(0, dot + 3);
-            }
+            var score = reader.GetString(0) + "s";
 
             sb.AppendLine(score);
         }
