@@ -96,7 +96,6 @@ public class LevelFinishedScene(string mazeSize) : Scene
         nextLevelButton.Visual.X = buttonWidth * 0.05f;
         nextLevelButton.Visual.Y = buttonHeight * -0.2f;
         var nextVisual = (ButtonVisual)nextLevelButton.Visual;
-        nextVisual.Background.Color = buttonColor;
         nextLevelButton.Text = "NEXT LEVEL";
         nextLevelButton.Click += HandleNextLevelClicked;
         panel.AddChild(nextLevelButton);
@@ -110,7 +109,6 @@ public class LevelFinishedScene(string mazeSize) : Scene
         backToMenuButton.Visual.X = buttonWidth * -0.05f;
         backToMenuButton.Visual.Y = buttonHeight * -0.2f;
         var menuVisual = (ButtonVisual)backToMenuButton.Visual;
-        menuVisual.Background.Color = buttonColor;
         backToMenuButton.Text = "MAIN MENU";
         backToMenuButton.Click += HandleBackToMenuClicked;
         panel.AddChild(backToMenuButton);
@@ -130,8 +128,6 @@ public class LevelFinishedScene(string mazeSize) : Scene
 
     private void InitializeUI()
     {
-        // Clear out any previous UI in case we came here from
-        // a different screen:
         GumService.Default.Root.Children.Clear();
         CreateLevelFinishedPanel();
 

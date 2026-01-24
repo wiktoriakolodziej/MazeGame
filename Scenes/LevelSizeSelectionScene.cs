@@ -25,11 +25,8 @@ public class LevelSizeSelectionScene : Scene
 
     public override void Initialize()
     {
-        // LoadContent is called during base.Initialize().
         base.Initialize();
 
-
-        // Set the position and origin for the Dungeon text.
         Vector2 size = _font.MeasureString(TITLE);
         _titleTextPos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.5f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.2f);
         _titleTextOrigin = size * 0.5f;
@@ -39,7 +36,6 @@ public class LevelSizeSelectionScene : Scene
 
     public override void LoadContent()
     {
-        // Load the font for the standard text.
         _font = Content.Load<SpriteFont>("fonts/Roboto");
     }
 
@@ -54,17 +50,10 @@ public class LevelSizeSelectionScene : Scene
 
         if (_levelSelectionScreenButtonsPanel.IsVisible)
         {
-            // Begin the sprite batch to prepare for rendering.
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            // The color to use for the drop shadow text.
-            Color dropShadowColor = Color.Black * 0.5f;
-
-
-            // Draw the Dungeon text on top of that at its original position
             SpriteBatch.DrawString(_font, TITLE, _titleTextPos, ColorService.MenuTextColor, 0.0f, _titleTextOrigin, 2.0f, SpriteEffects.None, 1.0f);
 
-            // Always end the sprite batch when finished.
             SpriteBatch.End();
         }
 
@@ -73,7 +62,6 @@ public class LevelSizeSelectionScene : Scene
 
     private void CreateLevelSelectionPanel()
     {
-        // Create a container to hold all of our buttons
         _levelSelectionScreenButtonsPanel = new Panel();
         _levelSelectionScreenButtonsPanel.Dock(Gum.Wireframe.Dock.Fill);
         _levelSelectionScreenButtonsPanel.AddToRoot();
@@ -125,8 +113,6 @@ public class LevelSizeSelectionScene : Scene
 
     private void InitializeUI()
     {
-        // Clear out any previous UI in case we came here from
-        // a different screen:
         GumService.Default.Root.Children.Clear();
 
         CreateLevelSelectionPanel();

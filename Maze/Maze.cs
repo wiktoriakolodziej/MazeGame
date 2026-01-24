@@ -57,9 +57,6 @@ namespace MazeGame.Maze
             var wall  = new MazeElement(CellType.Wall, mazeTexture2D, ColorService.WallColor);
             var empty  = new MazeElement(CellType.Path, emptyTexture2D, ColorService.PathColor);
 
-            //var files = Android.App.Application.Context.Assets.List("MazeSources/size" + Game1.mazeSize + "/");
-            //var rand = new Random();
-            //using var stream = Android.App.Application.Context.Assets.Open("MazeSources/size" + Game1.mazeSize + "/" + files[rand.Next(files.Length)]);
             using var stream = Android.App.Application.Context.Assets.Open(path);
             using var reader = new StreamReader(stream);
             string[] lines = reader.ReadToEnd().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);

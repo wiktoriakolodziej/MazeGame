@@ -17,7 +17,6 @@ namespace MazeGame.Maze
         private readonly SpriteBatch _spriteBatch = spriteBatch;
         private readonly Rectangle _screen = screen;
         private readonly int _cellDim = screen.Width / maze.Columns;
-        //private readonly int _topOffset = (screen.Height - screen.Width) / 2;
         private Vector2 _cellScale => new Vector2((float)_cellDim/_maze.Grid[0, 0].Texture.Width, (float)_cellDim/ _maze.Grid[0, 0].Texture.Height);
         public Rectangle startPosition => CalculateStartRectangle();
 
@@ -96,7 +95,6 @@ namespace MazeGame.Maze
                 return new Rectangle(0, 0, (int)scale, (int)scale);
             
             var (x, y) = startPoint.Value;
-            // Wspolrzedne w pozostalych funkcjach wydaja sie ok, a tu trzeba je zamienic
             return new Rectangle(y * _cellDim + 3, x * _cellDim + _screen.Y + 3, (int)scale, (int)scale);
         }
     }

@@ -81,10 +81,7 @@ namespace MazeGame.Services
                 (int)movingObject.Width,
                 (int)movingObject.Height
             );
-            //Console.WriteLine(ballBounds);
-            //foreach ( var obstacle in obstaclesBounds ) Console.WriteLine(obstacle);
             var obstacles = obstaclesBounds.Where(r => r.Position.Intersects(ballBounds));
-            //Console.WriteLine(obstacles.Count());
             if (!obstacles.Any())
             {
                 movingObject.Position += movingObject.Velocity;
@@ -104,7 +101,6 @@ namespace MazeGame.Services
 
             // Calculate the new position of the ball based on the velocity.
             var newPosition = movingObject.Position + movingObject.Velocity;
-            //Console.WriteLine("velocity " + movingObject.Velocity);
 
             var ballRadius = (int)(movingObject.Width / 2);
             var ballCenter = new Vector2((int)movingObject.Position.X + ballRadius, (int)movingObject.Position.Y + ballRadius);
@@ -124,16 +120,13 @@ namespace MazeGame.Services
                     return true;
                 }
                 Vector2 n_normal = (-1) * Vector2.Normalize(ray_n);
-                //Console.WriteLine("normal " + n_normal + " v " + movingObject.Velocity + " v reflected " + Vector2.Reflect(movingObject.Velocity, n_normal) + " overlap " + overlap + " ray_n " + ray_n);
                 if (ray_n == Vector2.Zero)
                 {
-                    //Console.WriteLine("first");
                     movingObject.Velocity = -movingObject.Velocity;
                     newPosition += overlap * Vector2.Normalize(movingObject.Velocity);
                 }
                 else
                 {
-                    //Console.WriteLine("second");
                     movingObject.Velocity = Vector2.Reflect(movingObject.Velocity, n_normal);
                     newPosition += n_normal * overlap + movingObject.Velocity;
                 }

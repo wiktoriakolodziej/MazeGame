@@ -34,11 +34,8 @@ public class OptionsScene(ISharedPreferences sharedPreferences) : Scene
 
     public override void Initialize()
     {
-        // LoadContent is called during base.Initialize().
         base.Initialize();
 
-
-        // Set the position and origin for the Dungeon text.
         Vector2 size = _font.MeasureString(TITLE);
         _titleTextPos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.5f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.1f);
         _titleTextOrigin = size * 0.5f;
@@ -54,7 +51,6 @@ public class OptionsScene(ISharedPreferences sharedPreferences) : Scene
 
     public override void LoadContent()
     {
-        // Load the font for the standard text.
         _font = Content.Load<SpriteFont>("fonts/Roboto");
     }
 
@@ -83,7 +79,6 @@ public class OptionsScene(ISharedPreferences sharedPreferences) : Scene
 
     private void CreateOptionsPanel()
     {
-        // Create a container to hold all of our buttons
         _optionsScreenButtonsPanel = new Panel();
         _optionsScreenButtonsPanel.Dock(Gum.Wireframe.Dock.Fill);
         _optionsScreenButtonsPanel.AddToRoot();
@@ -219,8 +214,6 @@ public class OptionsScene(ISharedPreferences sharedPreferences) : Scene
 
     private void InitializeUI()
     {
-        // Clear out any previous UI in case we came here from
-        // a different screen:
         GumService.Default.Root.Children.Clear();
 
         CreateOptionsPanel();

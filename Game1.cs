@@ -109,19 +109,6 @@ namespace MazeGame
                 );
                 """;
             command.ExecuteNonQuery();
-
-            //command.CommandText = "INSERT INTO scores VALUES(NULL, \"10x10\", 35.143)";
-            //command.ExecuteNonQuery();
-
-            //command.CommandText = "SELECT * FROM scores";
-            //using var reader = command.ExecuteReader();
-
-            //while (reader.Read())
-            //{
-            //    var name = reader.GetString(0);
-
-            //    Console.WriteLine($"Hello, {name}!");
-            //}
         }
 
         protected override void LoadContent()

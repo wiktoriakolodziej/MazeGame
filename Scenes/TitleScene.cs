@@ -24,11 +24,8 @@ public class TitleScene : Scene
 
     public override void Initialize()
     {
-        // LoadContent is called during base.Initialize().
         base.Initialize();
 
-
-        // Set the position and origin for the Dungeon text.
         Vector2 size = _font.MeasureString(TITLE);
         _titleTextPos = new Vector2(GraphicsDevice.PresentationParameters.BackBufferWidth * 0.5f, GraphicsDevice.PresentationParameters.BackBufferHeight * 0.2f);
         _titleTextOrigin = size * 0.5f;
@@ -38,7 +35,6 @@ public class TitleScene : Scene
 
     public override void LoadContent()
     {
-        // Load the font for the standard text.
         _font = Content.Load<SpriteFont>("fonts/04B1_30");
     }
 
@@ -53,20 +49,13 @@ public class TitleScene : Scene
 
         if (_titleScreenButtonsPanel.IsVisible)
         {
-            // Begin the sprite batch to prepare for rendering.
             SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            // The color to use for the drop shadow text.
             Color dropShadowColor = Color.Black * 0.5f;
-
-            // Draw the Dungeon text slightly offset from it is original position and
-            // with a transparent color to give it a drop shadow
             SpriteBatch.DrawString(_font, TITLE, _titleTextPos + new Vector2(10, 10), dropShadowColor, 0.0f, _titleTextOrigin, 5.0f, SpriteEffects.None, 1.0f);
 
-            // Draw the Dungeon text on top of that at its original position
             SpriteBatch.DrawString(_font, TITLE, _titleTextPos, Color.White, 0.0f, _titleTextOrigin, 5.0f, SpriteEffects.None, 1.0f);
 
-            // Always end the sprite batch when finished.
             SpriteBatch.End();
         }
 
@@ -75,7 +64,6 @@ public class TitleScene : Scene
 
     private void CreateTitlePanel()
     {
-        // Create a container to hold all of our buttons
         _titleScreenButtonsPanel = new Panel();
         _titleScreenButtonsPanel.Dock(Gum.Wireframe.Dock.Fill);
         _titleScreenButtonsPanel.AddToRoot();
@@ -141,8 +129,6 @@ public class TitleScene : Scene
 
     private void InitializeUI()
     {
-        // Clear out any previous UI in case we came here from
-        // a different screen:
         GumService.Default.Root.Children.Clear();
 
         CreateTitlePanel();
