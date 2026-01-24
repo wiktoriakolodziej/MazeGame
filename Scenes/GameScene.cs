@@ -19,7 +19,6 @@ public class GameScene(Rectangle screen, string levelName) : Scene, IDisposable
     private Sprite _ball;
     private readonly Rectangle _screenBounds = new Rectangle(0, (int)((screen.Height - screen.Width) / 2), screen.Width, screen.Width); // Telefon na stałe ustawiony w pionie (szerokość < wysokość)
     private MazeControl _mazeControl;
-    private Texture2D _debugLine; // dbg
     private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
     private readonly string levelName = levelName;
     private Panel _pausePanel;
@@ -64,7 +63,6 @@ public class GameScene(Rectangle screen, string levelName) : Scene, IDisposable
             _ball.Texture = Content.Load<Texture2D>("Images/ball");
         }
         _accelerometerService.SetObject(_ball);
-        _debugLine = Content.Load<Texture2D>("Images/debug_line"); // dbg
     }
 
     public override void Update(GameTime gameTime)
@@ -88,7 +86,6 @@ public class GameScene(Rectangle screen, string levelName) : Scene, IDisposable
 
         _mazeControl.DrawMaze();
         _ball.Draw(SpriteBatch);
-        SpriteBatch.Draw(_debugLine, new Vector2((float)(_ball.Position.X + 0.5 * _ball.Width), (float)(_ball.Position.Y + 0.5 * _ball.Height)), null, Color.White, (float)Math.Atan2(_accelerometerService.accReading.Y, _accelerometerService.accReading.X), Vector2.Zero, Vector2.One, SpriteEffects.None, 0.0f); // dbg
         
         SpriteBatch.End();
         GumService.Default.Draw();
