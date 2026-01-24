@@ -23,7 +23,6 @@ public class RecordScene : Scene
     private SpriteFont _robotoFont;
     private Color backgroundColor = ColorService.MenuBgColor;
     private Color textColor = ColorService.MenuTextColor;
-    private Color buttonColor = new Color(6, 212, 153);
 
     private Vector2 highScoresPos;
     private Vector2 highScoresOrigin;
@@ -138,10 +137,7 @@ public class RecordScene : Scene
         backToMenuButton.Visual.HeightUnits = Gum.DataTypes.DimensionUnitType.ScreenPixel;
         backToMenuButton.Visual.Width = buttonWidth;
         backToMenuButton.Visual.Height = buttonHeight;
-        //backToMenuButton.Visual.X = buttonWidth * -0.05f;
         backToMenuButton.Visual.Y = buttonHeight * -0.2f;
-        var menuVisual = (ButtonVisual)backToMenuButton.Visual;
-        menuVisual.Background.Color = buttonColor;
         backToMenuButton.Text = "MAIN MENU";
         backToMenuButton.Click += HandleBackToMenuClicked;
         panel.AddChild(backToMenuButton);
@@ -154,8 +150,6 @@ public class RecordScene : Scene
         nextButton.Visual.Height = buttonHeight;
         nextButton.Visual.X = buttonWidth * -0.05f;
         nextButton.Visual.Y = buttonHeight * -0.5f;
-        var nextVisual = (ButtonVisual)nextButton.Visual;
-        nextVisual.Background.Color = buttonColor;
         nextButton.Click += HandleNextSizeClicked;
         panel.AddChild(nextButton);
 
@@ -167,8 +161,6 @@ public class RecordScene : Scene
         prevButton.Visual.Height = buttonHeight;
         prevButton.Visual.X = buttonWidth * 0.05f;
         prevButton.Visual.Y = buttonHeight * -0.5f;
-        var prevVisual = (ButtonVisual)prevButton.Visual;
-        prevVisual.Background.Color = buttonColor;
         prevButton.Click += HandlePrevSizeClicked;
         panel.AddChild(prevButton);
 
