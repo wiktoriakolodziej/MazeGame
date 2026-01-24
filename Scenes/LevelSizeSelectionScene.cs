@@ -40,7 +40,7 @@ public class LevelSizeSelectionScene : Scene
     public override void LoadContent()
     {
         // Load the font for the standard text.
-        _font = Content.Load<SpriteFont>("fonts/04B1_30");
+        _font = Content.Load<SpriteFont>("fonts/Roboto");
     }
 
     public override void Update(GameTime gameTime)
@@ -60,12 +60,9 @@ public class LevelSizeSelectionScene : Scene
             // The color to use for the drop shadow text.
             Color dropShadowColor = Color.Black * 0.5f;
 
-            // Draw the Dungeon text slightly offset from it is original position and
-            // with a transparent color to give it a drop shadow
-            SpriteBatch.DrawString(_font, TITLE, _titleTextPos + new Vector2(10, 10), dropShadowColor, 0.0f, _titleTextOrigin, 5.0f, SpriteEffects.None, 1.0f);
 
             // Draw the Dungeon text on top of that at its original position
-            SpriteBatch.DrawString(_font, TITLE, _titleTextPos, Color.White, 0.0f, _titleTextOrigin, 5.0f, SpriteEffects.None, 1.0f);
+            SpriteBatch.DrawString(_font, TITLE, _titleTextPos, ColorService.MenuTextColor, 0.0f, _titleTextOrigin, 2.0f, SpriteEffects.None, 1.0f);
 
             // Always end the sprite batch when finished.
             SpriteBatch.End();
